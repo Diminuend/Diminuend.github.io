@@ -25,6 +25,35 @@
   
   
   <entry>
+    <title>Specifying SVD Files - Marus/cortex-debug GitHub Wiki</title>
+    <link href="/p/649142f2b0474564855a0e6d9f562ce1/"/>
+    <url>/p/649142f2b0474564855a0e6d9f562ce1/</url>
+    
+    <content type="html"><![CDATA[<p>Content mirrored for search engine indexing from:</p><p><a href="https://github.com/Marus/cortex-debug/wiki/Specifying-SVD-Files">https://github.com/Marus/cortex-debug/wiki/Specifying-SVD-Files</a></p><p><a href="https://github-wiki-see.page/">Why does this service exist?</a></p><p>📅 Last Modified: Thu, 21 Apr 2022 21:28:37 GMT</p><h1 id="Specifying-SVD-Files-Marus-cortex-debug-GitHub-Wiki"><a href="#Specifying-SVD-Files-Marus-cortex-debug-GitHub-Wiki" class="headerlink" title="Specifying SVD Files - Marus&#x2F;cortex-debug GitHub Wiki"></a>Specifying SVD Files - Marus&#x2F;cortex-debug GitHub Wiki</h1><p>The Cortex-Debug Extension uses <a href="http://www.keil.com/pack/doc/CMSIS/SVD/html/index.html">System View Description</a> (SVD) files to display information about the selected part, including the Cortex Peripherals view.</p><p>There are two options for specifying an SVD file:</p><ol><li>Obtain the SVD file from your device manufacturer. For instance, with ST, using instructions at <a href="https://community.st.com/s/question/0D50X00009XkWDkSAN/how-does-st-manage-svd-files">this link</a>. Then in your launch.json, specify the location of the file using something like <code>&quot;svdFile&quot;: &quot;./STM32F103.svd&quot;</code>. Other vendors may ship SVD files when you install their SW or device pack.</li><li>Find and install the appropriate Cortex Debug Device Support Pack by searching “Cortex Debug Device Support Pack” in the <a href="https://marketplace.visualstudio.com/">Visual Studio Marketplace</a>. Then in your launch.json, specify the device using <code>&quot;device&quot;: &quot;STM32F103xx&quot;</code> or similar.</li></ol><p>When using an <code>external</code> gdb server in your launch configuration, the device setting is not really used for anything else. Therefore getting the svd file direct from the MCU vendor and using <code>svdFile</code> to specify is recommended.</p><p>Background: <a href="https://github.com/Marus/cortex-debug/issues/288">https://github.com/Marus/cortex-debug/issues/288</a></p><p><a href="https://github-wiki-see.page/m/Marus/cortex-debug/wiki_index">🗂️ Page Index for this GitHub Wiki</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Blog</category>
+      
+      <category>杂项知识</category>
+      
+      <category>VSCode</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>vs code debug</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Python打包exe</title>
     <link href="/p/4c27a52fa6074968a591f169ad413f28/"/>
     <url>/p/4c27a52fa6074968a591f169ad413f28/</url>
