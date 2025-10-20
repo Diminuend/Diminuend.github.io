@@ -624,13 +624,80 @@
 </tbody></table>
 <p>例:<br>主BMS编址01号BMS,后面还有电池包<br>主机: 00 10 91 01 01 CRC<br>从机: 01 10 91 01 01 CRC</p>
 <p>主BMS编址05号BMS,所有编址完成<br>主机: 00 10 91 01 05 CRC<br>从机: 05 10 91 01 02 CRC</p>
-<h2 id="2-3-并包编址逻辑"><a href="#2-3-并包编址逻辑" class="headerlink" title="2.3 并包编址逻辑"></a>2.3 并包编址逻辑</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">	autonumber %显示数字标</span><br><span class="line">	participant 电池包1</span><br><span class="line">	participant 电池包2</span><br><span class="line">	participant 电池包3</span><br><span class="line">	</span><br><span class="line">	电池包1 --&gt;&gt; 电池包1 : 识别到自己为主机，开始执行编址</span><br><span class="line">	电池包1 --&gt;&gt; 电池包2 : 输出ID_OUT</span><br><span class="line">	电池包2 --&gt;&gt; 电池包2 : 收到输出ID_IN，监听总线地址命令</span><br><span class="line">	</span><br><span class="line">	Note over 电池包1,电池包3 : 电池包1发送编电池包编址命令1</span><br><span class="line">	电池包2 --&gt;&gt; 电池包2 : 收到编址命令，设置地址为自己地址</span><br><span class="line">	电池包2 --&gt;&gt; 电池包1 : 回复编址命令1成功</span><br><span class="line">	</span><br><span class="line">	Note over 电池包1,电池包3 : 电池包1发送编电池包编址命令2</span><br><span class="line">	电池包2 --&gt;&gt; 电池包2 : 收到编址命令为下一个包</span><br><span class="line">	电池包2 --&gt;&gt; 电池包3 : 输出ID_OUT</span><br><span class="line">	电池包3 --&gt;&gt; 电池包3 : 收到输出ID_IN，监听总线地址命令</span><br><span class="line">	</span><br><span class="line">	Note over 电池包1,电池包3 : 电池包1发送编电池包编址命令2</span><br><span class="line">	电池包3 --&gt;&gt; 电池包3 : 收到编址命令，设置地址为自己地址</span><br><span class="line">	电池包3 --&gt;&gt; 电池包1 : 回复编址命令完成</span><br><span class="line">	</span><br><span class="line">	电池包1 --&gt;&gt; 电池包1 : 收到编址完成命令，结束编址。</span><br></pre></td></tr></table></figure>
+<h2 id="2-3-并包编址逻辑"><a href="#2-3-并包编址逻辑" class="headerlink" title="2.3 并包编址逻辑"></a>2.3 并包编址逻辑</h2><pre class="mermaid">sequenceDiagram
+	autonumber %显示数字标
+	participant 电池包1
+	participant 电池包2
+	participant 电池包3
+	
+	电池包1 -->> 电池包1 : 识别到自己为主机，开始执行编址
+	电池包1 -->> 电池包2 : 输出ID_OUT
+	电池包2 -->> 电池包2 : 收到输出ID_IN，监听总线地址命令
+	
+	Note over 电池包1,电池包3 : 电池包1发送编电池包编址命令1
+	电池包2 -->> 电池包2 : 收到编址命令，设置地址为自己地址
+	电池包2 -->> 电池包1 : 回复编址命令1成功
+	
+	Note over 电池包1,电池包3 : 电池包1发送编电池包编址命令2
+	电池包2 -->> 电池包2 : 收到编址命令为下一个包
+	电池包2 -->> 电池包3 : 输出ID_OUT
+	电池包3 -->> 电池包3 : 收到输出ID_IN，监听总线地址命令
+	
+	Note over 电池包1,电池包3 : 电池包1发送编电池包编址命令2
+	电池包3 -->> 电池包3 : 收到编址命令，设置地址为自己地址
+	电池包3 -->> 电池包1 : 回复编址命令完成
+	
+	电池包1 -->> 电池包1 : 收到编址完成命令，结束编址。</pre>
 
-<h1 id="3-主任务"><a href="#3-主任务" class="headerlink" title="3 主任务"></a>3 主任务</h1><h2 id="唤醒判断逻辑"><a href="#唤醒判断逻辑" class="headerlink" title="唤醒判断逻辑"></a>唤醒判断逻辑</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line"></span><br><span class="line">开始--&gt;获取上次是否为主机</span><br><span class="line">获取上次是否为主机&#123;&#123;获取上次是否为主机&#125;&#125; --&gt; |Y| 内置电池包模式</span><br><span class="line">	内置电池包模式&#123;&#123;内置电池包模式&#125;&#125; --&gt; |Y| 设置为主机模式</span><br><span class="line">		设置为主机模式 --&gt; 运行循环任务</span><br><span class="line">	内置电池包模式&#123;&#123;内置电池包模式&#125;&#125; --&gt; |N| 设置为等待模式</span><br><span class="line">		设置为等待模式 --&gt; 运行循环任务</span><br><span class="line">	运行循环任务 --&gt; 结束</span><br><span class="line">获取上次是否为主机 --&gt; |N| 设置为等待模式</span><br></pre></td></tr></table></figure>
+<h1 id="3-主任务"><a href="#3-主任务" class="headerlink" title="3 主任务"></a>3 主任务</h1><h2 id="唤醒判断逻辑"><a href="#唤醒判断逻辑" class="headerlink" title="唤醒判断逻辑"></a>唤醒判断逻辑</h2><pre class="mermaid">	flowchart TB
+	
+	开始-->获取上次是否为主机
+	获取上次是否为主机 --> |Y| 内置电池包模式
+		内置电池包模式 --> |Y| 设置为主机模式
+			设置为主机模式 --> 运行循环任务
+		内置电池包模式 --> |N| 设置为等待模式
+			设置为等待模式 --> 运行循环任务
+		运行循环任务 --> 结束
+	获取上次是否为主机 --> |N| 设置为等待模式</pre>
 
-<h3 id="循环任务"><a href="#循环任务" class="headerlink" title="循环任务"></a>循环任务</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">当前为主机模式&#123;&#123;当前为主机模式?&#125;&#125;</span><br><span class="line">当前为从机模式&#123;&#123;当前为从机模式?&#125;&#125;</span><br><span class="line">当前为等待模式&#123;&#123;当前为等待模式?&#125;&#125;</span><br><span class="line">当前编址未完成&#123;&#123;当前编址未完成?&#125;&#125;</span><br><span class="line">编写1号从包&#123;&#123;编写1号从包?&#125;&#125;</span><br><span class="line"></span><br><span class="line">开始 --&gt; 当前为主机模式</span><br><span class="line">当前为主机模式 --&gt; |Y| 当前编址未完成</span><br><span class="line">	当前编址未完成 --&gt; |Y| 发送编址命令</span><br><span class="line">		主机发起编址 --&gt; 结束</span><br><span class="line">	当前编址未完成 --&gt; |N| 主机发起数据轮训 --&gt; 结束</span><br><span class="line">当前为主机模式 --&gt; |N| 当前为从机模式</span><br><span class="line">当前为从机模式 --&gt; |Y| 2 --&gt; 结束</span><br><span class="line">当前为从机模式 --&gt; |N| 当前为等待模式</span><br><span class="line">当前为等待模式 --&gt; |Y| 3 --&gt; 结束</span><br><span class="line">当前为等待模式 --&gt; |N| 结束</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">subgraph 发送编址命令</span><br><span class="line">	编写1号从包</span><br><span class="line">		编写1号从包 --&gt; |Y| 输出ID_OUT</span><br><span class="line">			输出ID_OUT --&gt; 主机发起编址</span><br><span class="line">		编写1号从包 --&gt; |N| 主机发起编址</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">subgraph 主机发起数据轮训</span><br><span class="line">	direction TB</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<h3 id="循环任务"><a href="#循环任务" class="headerlink" title="循环任务"></a>循环任务</h3><pre class="mermaid">	flowchart TB
+	当前为主机模式
+	当前为从机模式
+	当前为等待模式
+	当前编址未完成
+	编写1号从包
+	
+	开始 --> 当前为主机模式
+	当前为主机模式 --> |Y| 当前编址未完成
+		当前编址未完成 --> |Y| 发送编址命令
+			主机发起编址 --> 结束
+		当前编址未完成 --> |N| 主机发起数据轮训 --> 结束
+	当前为主机模式 --> |N| 当前为从机模式
+	当前为从机模式 --> |Y| 2 --> 结束
+	当前为从机模式 --> |N| 当前为等待模式
+	当前为等待模式 --> |Y| 3 --> 结束
+	当前为等待模式 --> |N| 结束
+	
+	
+	subgraph 发送编址命令
+		编写1号从包
+			编写1号从包 --> |Y| 输出ID_OUT
+				输出ID_OUT --> 主机发起编址
+			编写1号从包 --> |N| 主机发起编址
+	end
+	
+	subgraph 主机发起数据轮训
+		direction TB
+	end</pre>
 
-<h4 id="主机发起编址"><a href="#主机发起编址" class="headerlink" title="主机发起编址"></a>主机发起编址</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line"></span><br><span class="line">开始 --&gt; 获取当前并联BMS数</span><br><span class="line">获取当前并联BMS数 --&gt; 当前并联BMS数为0</span><br><span class="line">	当前并联BMS数为0 --&gt; |Y| 设置ID_OUT为使能</span><br><span class="line">		设置ID_OUT为使能 --&gt; 当前并联BMS数+1发送编址命令</span><br><span class="line">	当前并联BMS数为0 --&gt; |N| 当前并联BMS数+1发送编址命令</span><br><span class="line">	当前并联BMS数+1发送编址命令 --&gt; 结束</span><br></pre></td></tr></table></figure>
+<h4 id="主机发起编址"><a href="#主机发起编址" class="headerlink" title="主机发起编址"></a>主机发起编址</h4><pre class="mermaid">	flowchart TB
+	
+	开始 --> 获取当前并联BMS数
+	获取当前并联BMS数 --> 当前并联BMS数为0
+		当前并联BMS数为0 --> |Y| 设置ID_OUT为使能
+			设置ID_OUT为使能 --> 当前并联BMS数+1发送编址命令
+		当前并联BMS数为0 --> |N| 当前并联BMS数+1发送编址命令
+		当前并联BMS数+1发送编址命令 --> 结束</pre>
 
 <h4 id="主机发起数据轮训"><a href="#主机发起数据轮训" class="headerlink" title="主机发起数据轮训"></a>主机发起数据轮训</h4><ol>
 <li>需要有一个命令队列</li>
@@ -638,17 +705,85 @@
 </ol>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="type">uint8_t</span> contPackType;<span class="comment">//控制模式, 01广播 02指定包</span></span><br><span class="line">	<span class="type">uint8_t</span> targetBms;   <span class="comment">//控制目标Bms号</span></span><br><span class="line">	<span class="type">uint8_t</span> buff[<span class="number">32</span>];    <span class="comment">//数据缓存</span></span><br><span class="line">	<span class="type">uint8_t</span> SendCnt;     <span class="comment">//发送次数</span></span><br><span class="line">	<span class="type">uint8_t</span> SendTimeOs;  <span class="comment">//发送时间</span></span><br><span class="line">	<span class="type">uint8_t</span> ResFlg;      <span class="comment">//返回标志</span></span><br><span class="line">&#125;发送队列;</span><br><span class="line"></span><br><span class="line"><span class="type">uint32_t</span> AllResFlg; <span class="comment">//用于描述检查多包的时候的返回情况</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">开始 --&gt; 获取命令队列</span><br><span class="line"></span><br><span class="line">subgraph 获取命令队列</span><br><span class="line">	direction TB</span><br><span class="line">	</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">	flowchart TB
+	
+	
+	
+	开始 --> 获取命令队列
+	
+	subgraph 获取命令队列
+		direction TB
+		
+	end</pre>
 
-<h1 id="4-通讯回调任务"><a href="#4-通讯回调任务" class="headerlink" title="4 通讯回调任务"></a>4 通讯回调任务</h1><h3 id="4-1-主板通讯回调-MB-BMS"><a href="#4-1-主板通讯回调-MB-BMS" class="headerlink" title="4.1 主板通讯回调(MB &lt;–&gt; BMS)"></a>4.1 主板通讯回调(MB &lt;–&gt; BMS)</h3><h3 id="4-2并包端口通讯回调-BMS0-BMS1…BMSn"><a href="#4-2并包端口通讯回调-BMS0-BMS1…BMSn" class="headerlink" title="4.2并包端口通讯回调(BMS0 &lt;–&gt; BMS1…BMSn)"></a>4.2并包端口通讯回调(BMS0 &lt;–&gt; BMS1…BMSn)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">开始 --&gt; 主机模式</span><br><span class="line">主机模式&#123;&#123;主机模式&#125;&#125; --&gt; |Y|运行主机回调函数</span><br><span class="line">	运行主机回调函数 --&gt; 结束</span><br><span class="line">主机模式 --&gt; |N| 运行从机回调函数</span><br><span class="line">	运行从机回调函数 --&gt; 结束</span><br></pre></td></tr></table></figure>
+<h1 id="4-通讯回调任务"><a href="#4-通讯回调任务" class="headerlink" title="4 通讯回调任务"></a>4 通讯回调任务</h1><h3 id="4-1-主板通讯回调-MB-BMS"><a href="#4-1-主板通讯回调-MB-BMS" class="headerlink" title="4.1 主板通讯回调(MB &lt;–&gt; BMS)"></a>4.1 主板通讯回调(MB &lt;–&gt; BMS)</h3><h3 id="4-2并包端口通讯回调-BMS0-BMS1…BMSn"><a href="#4-2并包端口通讯回调-BMS0-BMS1…BMSn" class="headerlink" title="4.2并包端口通讯回调(BMS0 &lt;–&gt; BMS1…BMSn)"></a>4.2并包端口通讯回调(BMS0 &lt;–&gt; BMS1…BMSn)</h3><pre class="mermaid">	flowchart TB
+	开始 --> 主机模式
+	主机模式 --> |Y|运行主机回调函数
+		运行主机回调函数 --> 结束
+	主机模式 --> |N| 运行从机回调函数
+		运行从机回调函数 --> 结束</pre>
 
-<h4 id="4-2-1-主机回调函数"><a href="#4-2-1-主机回调函数" class="headerlink" title="4.2.1 主机回调函数"></a>4.2.1 主机回调函数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">主机模式&amp;&amp;地址在地址池内&#123;&#123;主机模式&amp;&amp;地址在地址池内?&#125;&#125;</span><br><span class="line">命令为编址命令&#123;&#123;命令为编址命令?&#125;&#125;</span><br><span class="line"></span><br><span class="line">开始 --&gt; 主机模式&amp;&amp;地址在地址池内</span><br><span class="line">主机模式&amp;&amp;地址在地址池内 --&gt; |N| 结束</span><br><span class="line">主机模式&amp;&amp;地址在地址池内 --&gt; |Y| 命令为编址命令</span><br><span class="line">	命令为编址命令 --&gt; |Y| 回调编址命令 --&gt; 结束</span><br><span class="line">	命令为编址命令 --&gt; |N| 回调命令回调 --&gt;结束</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="4-2-1-主机回调函数"><a href="#4-2-1-主机回调函数" class="headerlink" title="4.2.1 主机回调函数"></a>4.2.1 主机回调函数</h4><pre class="mermaid">	flowchart TB
+	主机模式&&地址在地址池内
+	命令为编址命令
+	
+	开始 --> 主机模式&&地址在地址池内
+	主机模式&&地址在地址池内 --> |N| 结束
+	主机模式&&地址在地址池内 --> |Y| 命令为编址命令
+		命令为编址命令 --> |Y| 回调编址命令 --> 结束
+		命令为编址命令 --> |N| 回调命令回调 -->结束</pre>
 
-<h5 id="4-2-1-1-主机编址回调函数"><a href="#4-2-1-1-主机编址回调函数" class="headerlink" title="4.2.1.1 主机编址回调函数"></a>4.2.1.1 主机编址回调函数</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">编址成功命令&#123;&#123;编址成功命令?&#125;&#125;</span><br><span class="line">编址成功为末包&#123;&#123;编址成功为末包?&#125;&#125;</span><br><span class="line"></span><br><span class="line">开始 --&gt; 编址成功命令 </span><br><span class="line">编址成功命令 --&gt; |N| 结束</span><br><span class="line">编址成功命令 --&gt; |Y| 编址成功为末包</span><br><span class="line">	编址成功为末包 --&gt; |N| 设置并包数量+1</span><br><span class="line">	编址成功为末包 --&gt; |Y| 编址完成</span><br><span class="line">	编址完成 --&gt; 设置并包数量+1</span><br><span class="line">	设置并包数量+1 --&gt; 结束</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="4-2-1-1-主机编址回调函数"><a href="#4-2-1-1-主机编址回调函数" class="headerlink" title="4.2.1.1 主机编址回调函数"></a>4.2.1.1 主机编址回调函数</h5><pre class="mermaid">	flowchart TB
+	编址成功命令
+	编址成功为末包
+	
+	开始 --> 编址成功命令 
+	编址成功命令 --> |N| 结束
+	编址成功命令 --> |Y| 编址成功为末包
+		编址成功为末包 --> |N| 设置并包数量+1
+		编址成功为末包 --> |Y| 编址完成
+		编址完成 --> 设置并包数量+1
+		设置并包数量+1 --> 结束</pre>
 
-<h5 id="4-2-1-2-主机命令回调函数"><a href="#4-2-1-2-主机命令回调函数" class="headerlink" title="4.2.1.2 主机命令回调函数"></a>4.2.1.2 主机命令回调函数</h5><h3 id="从机回调函数"><a href="#从机回调函数" class="headerlink" title="从机回调函数"></a>从机回调函数</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line"></span><br><span class="line">广播命令或本机命令&#123;&#123;广播命令或本机命令?&#125;&#125;</span><br><span class="line">命令为编址命令&#123;&#123;命令为编址命令?&#125;&#125;</span><br><span class="line"></span><br><span class="line">开始 --&gt; 广播命令或本机命令</span><br><span class="line">广播命令或本机命令 --&gt; |N| 结束</span><br><span class="line">广播命令或本机命令 --&gt; |Y| 命令为编址命令</span><br><span class="line">	命令为编址命令 --&gt; |Y| 编址回调函数</span><br><span class="line">		编址回调函数 --&gt; 结束</span><br><span class="line">	命令为编址命令 --&gt; |N| 命令回调函数</span><br><span class="line">		命令回调函数 --&gt; 结束</span><br></pre></td></tr></table></figure>
+<h5 id="4-2-1-2-主机命令回调函数"><a href="#4-2-1-2-主机命令回调函数" class="headerlink" title="4.2.1.2 主机命令回调函数"></a>4.2.1.2 主机命令回调函数</h5><h3 id="从机回调函数"><a href="#从机回调函数" class="headerlink" title="从机回调函数"></a>从机回调函数</h3><pre class="mermaid">	flowchart TB
+	
+	广播命令或本机命令
+	命令为编址命令
+	
+	开始 --> 广播命令或本机命令
+	广播命令或本机命令 --> |N| 结束
+	广播命令或本机命令 --> |Y| 命令为编址命令
+		命令为编址命令 --> |Y| 编址回调函数
+			编址回调函数 --> 结束
+		命令为编址命令 --> |N| 命令回调函数
+			命令回调函数 --> 结束</pre>
 
-<h4 id="编址回调函数"><a href="#编址回调函数" class="headerlink" title="编址回调函数"></a>编址回调函数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line"></span><br><span class="line">编址完成&#123;&#123;编址完成?&#125;&#125;</span><br><span class="line">ID_IN被使能&#123;&#123;ID_IN被使能&#125;&#125; </span><br><span class="line">IN-CHK被使能&#123;&#123;IN-CHK被使能?&#125;&#125;</span><br><span class="line">设置地址为本机地址+1&#123;&#123;设置地址为本机地址+1?&#125;&#125;</span><br><span class="line"></span><br><span class="line">编址回调函数 --&gt; 编址完成</span><br><span class="line">编址完成 --&gt; |N| ID_IN被使能</span><br><span class="line">	ID_IN被使能 --&gt; |N| 结束</span><br><span class="line">	ID_IN被使能 --&gt; |Y| 设置本机地址</span><br><span class="line">		设置本机地址 --&gt; 结束</span><br><span class="line">编址完成 --&gt; |Y| 设置地址为本机地址+1</span><br><span class="line">	设置地址为本机地址+1 --&gt; |N| 结束</span><br><span class="line">	设置地址为本机地址+1 --&gt; |Y| 设置ID_OUT为使能模式</span><br><span class="line">		设置ID_OUT为使能模式 --&gt; 结束</span><br><span class="line">		</span><br><span class="line">subgraph 设置本机地址</span><br><span class="line">	direction TB</span><br><span class="line">	设置当前ID为本机ID --&gt; IN-CHK被使能</span><br><span class="line">	IN-CHK被使能 --&gt; |N| 回复末包编址完成</span><br><span class="line">		回复末包编址完成 --&gt; 设置本机编址完成</span><br><span class="line">	IN-CHK被使能 --&gt; |Y| 回复编址完成后面还有包</span><br><span class="line">			回复编址完成后面还有包 --&gt; 设置本机编址完成</span><br><span class="line">		</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<h4 id="编址回调函数"><a href="#编址回调函数" class="headerlink" title="编址回调函数"></a>编址回调函数</h4><pre class="mermaid">	flowchart TB
+	
+	编址完成
+	ID_IN被使能 
+	IN-CHK被使能NaN
+	设置地址为本机地址+1NaN
+	
+	编址回调函数 --> 编址完成
+	编址完成 --> |N| ID_IN被使能
+		ID_IN被使能 --> |N| 结束
+		ID_IN被使能 --> |Y| 设置本机地址
+			设置本机地址 --> 结束
+	编址完成 --> |Y| 设置地址为本机地址+1
+		设置地址为本机地址+1 --> |N| 结束
+		设置地址为本机地址+1 --> |Y| 设置ID_OUT为使能模式
+			设置ID_OUT为使能模式 --> 结束
+			
+	subgraph 设置本机地址
+		direction TB
+		设置当前ID为本机ID --> IN-CHK被使能
+		IN-CHK被使能 --> |N| 回复末包编址完成
+			回复末包编址完成 --> 设置本机编址完成
+		IN-CHK被使能 --> |Y| 回复编址完成后面还有包
+				回复编址完成后面还有包 --> 设置本机编址完成
+			
+	end</pre>
 </div><div class="article-licensing box"><div class="licensing-title"><p>电池包通讯与编址</p><p><a href="http://example.com/p/c643e9f32c9247c89a7cb7b70fa4ec52/">http://example.com/p/c643e9f32c9247c89a7cb7b70fa4ec52/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>John Doe</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2025-10-20</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2025-10-20</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=68f2eec7ff633057bc249966&amp;product=privacy-policy-generator" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/resources/aliplay.jpg" alt="Alipay"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/resources/wechatPlay.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/p/e1d27f1b05b54511bcb01429bf8dd590/"><span class="level-item">windows系统右键打开cmd命令窗口</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">Comments</h3><script src="https://giscus.app/client.js" repo="Diminuend/Diminuend.github.io" data-repo="Diminuend/Diminuend.github.io" data-repo-id="R_kgDOQCJJZQ" data-category-id="DIC_kwDOQCJJZc4CwyBu" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="bottom" data-theme="noborder_light" data-lang="zh-CN" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/resources/avatar..jpg" alt="Dim_峰"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Dim_峰</p><p class="is-size-6 is-block">为梦想而努力！</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>东莞，广东</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives/"><p class="title">8</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories/"><p class="title">5</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags/"><p class="title">4</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/Diminuend" target="_blank" rel="me noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/Diminuend"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="EMAIL" href="mailto:937328303@qq.com"><i class="fas fa-envelope"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-10-20T00:11:07.114Z">2025-10-20</time></p><p class="title"><a href="/p/c643e9f32c9247c89a7cb7b70fa4ec52/">电池包通讯与编址</a></p><p class="categories"><a href="/categories/BMS/">BMS</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-10-09T02:57:26.429Z">2025-10-09</time></p><p class="title"><a href="/p/e1d27f1b05b54511bcb01429bf8dd590/">windows系统右键打开cmd命令窗口</a></p><p class="categories"><a href="/categories/%E6%9D%82%E9%A1%B9%E7%9F%A5%E8%AF%86/">杂项知识</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-23T07:38:18.015Z">2025-05-23</time></p><p class="title"><a href="/p/a170a61759d34e2283c05f05a9430426/">VSCODE开发环境安装说明</a></p><p class="categories"><a href="/categories/VSCode/">VSCode</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-13T08:59:16.648Z">2025-05-13</time></p><p class="title"><a href="/p/459ea392bc8d45d2849ad16d238600ee/">VSCode Cortex Debug</a></p><p class="categories"><a href="/categories/VSCode/">VSCode</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-13T08:58:07.394Z">2025-05-13</time></p><p class="title"><a href="/p/649142f2b0474564855a0e6d9f562ce1/">Specifying SVD Files - Marus/cortex-debug GitHub Wiki</a></p><p class="categories"><a href="/categories/VSCode/">VSCode</a></p></div></article></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/python/"><span class="tag">python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vs-code-debug/"><span class="tag">vs code debug</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vscode-%E6%8F%92%E4%BB%B6/"><span class="tag">vscode 插件</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8F%8C%E5%90%91dc/"><span class="tag">双向dc</span><span class="tag">1</span></a></div></div></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/BMS/"><span class="level-start"><span class="level-item">BMS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/DcDc/"><span class="level-start"><span class="level-item">DcDc</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/VSCode/"><span class="level-start"><span class="level-item">VSCode</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E9%A1%B9%E7%9F%A5%E8%AF%86/"><span class="level-start"><span class="level-item">杂项知识</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2025/10/"><span class="level-start"><span class="level-item">October 2025</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/05/"><span class="level-start"><span class="level-item">May 2025</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/02/"><span class="level-start"><span class="level-item">February 2025</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/08/"><span class="level-start"><span class="level-item">August 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2023/10/"><span class="level-start"><span class="level-item">October 2023</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg" alt="Diminuend" height="28"></a><p class="is-size-7"><span>&copy; 2025 John Doe</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">漏 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Diminuend"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
             article: {
                 highlight: {
