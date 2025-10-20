@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>电池包通讯与编址 - Diminuend</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Diminuend"><meta name="msapplication-TileImage" content="/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Diminuend"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1.1 输入端口-接上一个电池包   PIN号 PIN名 PIN方向 说明    1 EN 输入 唤醒电池包   2 ID_IN 输入    3      4 485-A     5 485-B     6 GNDD  接地         1.2 输出端口-接下一个电池包"><meta property="og:type" content="blog"><meta property="og:title" content="电池包通讯与编址"><meta property="og:url" content="http://example.com/p/c643e9f32c9247c89a7cb7b70fa4ec52/"><meta property="og:site_name" content="Diminuend"><meta property="og:description" content="1.1 输入端口-接上一个电池包   PIN号 PIN名 PIN方向 说明    1 EN 输入 唤醒电池包   2 ID_IN 输入    3      4 485-A     5 485-B     6 GNDD  接地         1.2 输出端口-接下一个电池包"><meta property="og:locale" content="en_US"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:published_time" content="2025-10-20T00:11:07.114Z"><meta property="article:modified_time" content="2025-10-20T00:12:37.792Z"><meta property="article:author" content="John Doe"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://example.com/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/p/c643e9f32c9247c89a7cb7b70fa4ec52/"},"headline":"电池包通讯与编址","image":["http://example.com/img/og_image.png"],"datePublished":"2025-10-20T00:11:07.114Z","dateModified":"2025-10-20T00:12:37.792Z","author":{"@type":"Person","name":"John Doe"},"publisher":{"@type":"Organization","name":"Diminuend","logo":{"@type":"ImageObject","url":"http://example.com/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg"}},"description":"1.1 输入端口-接上一个电池包   PIN号 PIN名 PIN方向 说明    1 EN 输入 唤醒电池包   2 ID_IN 输入    3      4 485-A     5 485-B     6 GNDD  接地         1.2 输出端口-接下一个电池包"}</script><link rel="canonical" href="http://example.com/p/c643e9f32c9247c89a7cb7b70fa4ec52/"><link rel="icon" href="/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/Monokai.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><meta name="msvalidate.01" content="AA08BAB3DB3C9052C9B8EC5F6F4CE2AB"><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha512-fHwaWebuwA7NSF5Qg/af4UeDx9XqUpYpOGgubo3yWu+b2IQR4UeQwbb42Ti7gVAjNtVoI/I9TEoYeu9omwcC6g==" crossorigin="anonymous" referrerpolicy="no-referrer" /><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg" alt="Diminuend" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Diminuend"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2025-10-20T00:11:07.114Z" title="10/20/2025, 8:11:07 AM">2025-10-20</time></span><span class="level-item">Updated&nbsp;<time dateTime="2025-10-20T00:12:37.792Z" title="10/20/2025, 8:12:37 AM">2025-10-20</time></span><span class="level-item"><a class="link-muted" href="/categories/BMS/">BMS</a></span><span class="level-item">17 minutes read (About 2496 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">电池包通讯与编址</h1><div class="content"><h2 id="1-1-输入端口-接上一个电池包"><a href="#1-1-输入端口-接上一个电池包" class="headerlink" title="1.1 输入端口-接上一个电池包"></a>1.1 输入端口-接上一个电池包</h2><table>
+<thead>
+<tr>
+<th align="center">PIN号</th>
+<th align="center">PIN名</th>
+<th align="center">PIN方向</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">EN</td>
+<td align="center">输入</td>
+<td align="center">唤醒电池包</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">ID_IN</td>
+<td align="center">输入</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">485-A</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">485-B</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">GNDD</td>
+<td align="center"></td>
+<td align="center">接地</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<h2 id="1-2-输出端口-接下一个电池包"><a href="#1-2-输出端口-接下一个电池包" class="headerlink" title="1.2 输出端口-接下一个电池包"></a>1.2 输出端口-接下一个电池包</h2><table>
+<thead>
+<tr>
+<th align="center">PIN号</th>
+<th align="center">PIN名</th>
+<th align="center">PIN方向</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">EN</td>
+<td align="center">输入</td>
+<td align="center">唤醒电池包</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">ID_OPUT</td>
+<td align="center">输入</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">485-A</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">485-B</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">IN-CHK</td>
+<td align="center">输入</td>
+<td align="center">端口拉低，MCU脚被拉高说明后面有接入</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<h2 id="1-3-接口对插说明"><a href="#1-3-接口对插说明" class="headerlink" title="1.3 接口对插说明"></a>1.3 接口对插说明</h2><table>
+<thead>
+<tr>
+<th align="center">PIN号</th>
+<th align="center">上一个包PIN</th>
+<th align="center">下一个包PIN</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">EN</td>
+<td align="center">EN</td>
+<td align="left">唤醒电池包，通常是主机的唤醒边缘或者按钮</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">ID_OUT</td>
+<td align="center">ID_IN</td>
+<td align="left">使用上个BMS的IO来控制下个的电池包是否编址</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">485-A</td>
+<td align="center">RS485-A-2</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">485-B</td>
+<td align="center">RS485-B-2</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">IN-CHK</td>
+<td align="center">GNDD</td>
+<td align="left">端口拉低，MCU脚被拉高说明后面有接入</td>
+</tr>
+</tbody></table>
+<h1 id="2-基本描述"><a href="#2-基本描述" class="headerlink" title="2 基本描述"></a>2 基本描述</h1><ol>
+<li>开机默认为加电包</li>
+<li>收到主板消息后确认自己为主包</li>
+<li>开始发起编址通讯</li>
+</ol>
+<h2 id="2-1需要内存"><a href="#2-1需要内存" class="headerlink" title="2.1需要内存"></a>2.1需要内存</h2><table>
+<thead>
+<tr>
+<th align="center">name</th>
+<th align="center"></th>
+<th align="center">是否flash</th>
+<th align="left">说明</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Main battery pack built in</td>
+<td align="center"></td>
+<td align="center">Y</td>
+<td align="left">存储是否电池包内置</td>
+<td>\</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">0:外置电池包</td>
+<td>\</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">1:内置电池包</td>
+<td></td>
+</tr>
+<tr>
+<td align="center">BMS_MASTER</td>
+<td align="center"></td>
+<td align="center">N</td>
+<td align="left">表示是否为主包</td>
+<td></td>
+</tr>
+<tr>
+<td align="center">BMS_END</td>
+<td align="center"></td>
+<td align="center">N</td>
+<td align="left">表示自己是否为末包</td>
+<td></td>
+</tr>
+<tr>
+<td align="center">BMS_EDIT_ADDR</td>
+<td align="center"></td>
+<td align="center">N</td>
+<td align="left"></td>
+<td></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left"></td>
+<td></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left"></td>
+<td></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left"></td>
+<td></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left"></td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="2-2-并包协议"><a href="#2-2-并包协议" class="headerlink" title="2.2 并包协议"></a>2.2 并包协议</h2><h2 id="2-2-1协议格式描述"><a href="#2-2-1协议格式描述" class="headerlink" title="2.2.1协议格式描述"></a>2.2.1协议格式描述</h2><h3 id="指定发送数据"><a href="#指定发送数据" class="headerlink" title="指定发送数据"></a>指定发送数据</h3><table>
+<thead>
+<tr>
+<th align="center">描述</th>
+<th align="center">设备地址</th>
+<th align="center">功能码</th>
+<th align="center">命令码</th>
+<th align="center">长度</th>
+<th>数据</th>
+<th>CRC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">主机发送</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td>N byte</td>
+<td>2byte</td>
+</tr>
+<tr>
+<td align="center">^^</td>
+<td align="center">ADDR</td>
+<td align="center">0x10</td>
+<td align="center">CMD命令码</td>
+<td align="center">数据长度(0~255)</td>
+<td>……</td>
+<td>2byte</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">描述</th>
+<th align="center">设备地址</th>
+<th align="center">功能码</th>
+<th align="center">命令码</th>
+<th align="center">长度</th>
+<th>CRC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">从机回复</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td></td>
+</tr>
+<tr>
+<td align="center">^^</td>
+<td align="center">ADDR</td>
+<td align="center">0x10</td>
+<td align="center">CMD命令码</td>
+<td align="center">数据长度(0~255)</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="读取数据"><a href="#读取数据" class="headerlink" title="读取数据"></a>读取数据</h3><table>
+<thead>
+<tr>
+<th align="center">描述</th>
+<th align="center">设备地址</th>
+<th align="center">功能码</th>
+<th align="center">命令码</th>
+<th align="center">长度</th>
+<th>CRC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">主机发送</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td></td>
+</tr>
+<tr>
+<td align="center">^^</td>
+<td align="center">ADDR</td>
+<td align="center">0x03</td>
+<td align="center">CMD命令码</td>
+<td align="center">数据长度(0~255)</td>
+<td></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">描述</th>
+<th align="center">设备地址</th>
+<th align="center">功能码</th>
+<th align="center">命令码</th>
+<th align="center">长度</th>
+<th>数据</th>
+<th>CRC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">从机回复</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td>N byte</td>
+<td>2byte</td>
+</tr>
+<tr>
+<td align="center">^^</td>
+<td align="center">ADDR</td>
+<td align="center">0x03</td>
+<td align="center">CMD命令码</td>
+<td align="center">数据长度(0~255)</td>
+<td>……</td>
+<td>2byte</td>
+</tr>
+</tbody></table>
+<h3 id="广播发送数据-仅适用广播MOS控制命令"><a href="#广播发送数据-仅适用广播MOS控制命令" class="headerlink" title="广播发送数据(仅适用广播MOS控制命令)"></a>广播发送数据(仅适用广播MOS控制命令)</h3><table>
+<thead>
+<tr>
+<th align="center">描述</th>
+<th align="center">设备地址</th>
+<th align="center">功能码</th>
+<th align="center">命令码</th>
+<th align="center">长度</th>
+<th align="center">BMS0:1</th>
+<th align="center">BMS2:3</th>
+<th align="center">…</th>
+<th align="center">BMSn-1:n</th>
+<th>CRC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">主机发送</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">…</td>
+<td align="center">1byte</td>
+<td></td>
+</tr>
+<tr>
+<td align="center">^^</td>
+<td align="center">0x00</td>
+<td align="center">0x10</td>
+<td align="center">0x90</td>
+<td align="center">长度</td>
+<td align="center">…</td>
+<td align="center">…</td>
+<td align="center">…</td>
+<td align="center">…</td>
+<td></td>
+</tr>
+<tr>
+<td align="center">长度   为BMS个数的&#x2F;2</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+<tr>
+<td align="center">BMS0:1 表示为第0个BMS与第一个从机的控制命令</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>其中数据低4位表示为BMS0,高4位表示为BMS1<br>BMS0:为本机<br>BMS1:第一个从机<br>…<br>BMSN:第N个从机</p>
+</blockquote>
+<h3 id="CMD命令码"><a href="#CMD命令码" class="headerlink" title="CMD命令码"></a>CMD命令码</h3><table>
+<thead>
+<tr>
+<th align="center">命令码</th>
+<th align="center">读写</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0x50</td>
+<td align="center">R</td>
+<td align="center">BMS主信息</td>
+</tr>
+<tr>
+<td align="center">0x51</td>
+<td align="center">R</td>
+<td align="center">版本信息</td>
+</tr>
+<tr>
+<td align="center">0x52</td>
+<td align="center">R</td>
+<td align="center">扩展数据</td>
+</tr>
+<tr>
+<td align="center">0x53</td>
+<td align="center">R</td>
+<td align="center">单体电压</td>
+</tr>
+<tr>
+<td align="center">0x54</td>
+<td align="center">R</td>
+<td align="center">单体温度</td>
+</tr>
+<tr>
+<td align="center">0x90</td>
+<td align="center">W</td>
+<td align="center">MOS控制</td>
+</tr>
+<tr>
+<td align="center">0x91</td>
+<td align="center">W</td>
+<td align="center">编址命令,存在特殊回复</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<h4 id="MOS控制命令"><a href="#MOS控制命令" class="headerlink" title="MOS控制命令"></a>MOS控制命令</h4><p>MOS控制命令可以广播也可以单独控制</p>
+<table>
+<thead>
+<tr>
+<th align="center">控制目标</th>
+<th align="center">断开(00b)</th>
+<th align="center">闭合(01b)</th>
+<th align="center">自动(10b)</th>
+<th align="center">保持(11b)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">充电[3:2]</td>
+<td align="center">充电mos断开</td>
+<td align="center">充电mos闭合</td>
+<td align="center">充电MOS自动[^3]</td>
+<td align="center">充电MOS保持[^4]</td>
+</tr>
+<tr>
+<td align="center">放电[1:0]</td>
+<td align="center">放电mos断开</td>
+<td align="center">放电mos闭合</td>
+<td align="center">放电MOS自动[^3]</td>
+<td align="center">放电MOS保持[^4]</td>
+</tr>
+</tbody></table>
+<p>例如:<br>主机需要广播<br>BMS0:充电闭合 放电断开<br>BMS1:充电自动 放电断开<br>BMS3:充电断开 放电断开<br>BMS4:充电自动 放电断开</p>
+<p>主机: 00 10 90 04 04 08 00 08 CRC<br>从机: 不回复</p>
+<p>控制1号BMS<br>主机: 01 10 90 01 04 CRC<br>从机: 01 10 90 01 CRC</p>
+<h4 id="编址命令"><a href="#编址命令" class="headerlink" title="编址命令"></a>编址命令</h4><table>
+<thead>
+<tr>
+<th align="center">描述</th>
+<th align="center">设备地址</th>
+<th align="center">功能码</th>
+<th align="center">命令码</th>
+<th align="center">长度</th>
+<th align="center">目标地址</th>
+<th align="center">CRC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">主机发送</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1 byte</td>
+<td align="center">2byte</td>
+</tr>
+<tr>
+<td align="center">^^</td>
+<td align="center">ADDR</td>
+<td align="center">0x10</td>
+<td align="center">0x91</td>
+<td align="center">0x01</td>
+<td align="center">ID</td>
+<td align="center">CRC</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">描述</th>
+<th align="center">设备地址</th>
+<th align="center">功能码</th>
+<th align="center">命令码</th>
+<th align="center">长度</th>
+<th align="center">编址结果</th>
+<th align="center">CRC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">从机回复</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">1byte</td>
+<td align="center">2byte</td>
+</tr>
+<tr>
+<td align="center">^^</td>
+<td align="center">ADDR</td>
+<td align="center">0x10</td>
+<td align="center">0x91</td>
+<td align="center">0x01</td>
+<td align="center">xx</td>
+<td align="center">CRC</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">编址结果</th>
+<th align="center">值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">缺省</td>
+<td align="center">0x00</td>
+</tr>
+<tr>
+<td align="center">本机编址完成</td>
+<td align="center">0x01</td>
+</tr>
+<tr>
+<td align="center">所有编址完成</td>
+<td align="center">0x02</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>例:<br>主BMS编址01号BMS,后面还有电池包<br>主机: 00 10 91 01 01 CRC<br>从机: 01 10 91 01 01 CRC</p>
+<p>主BMS编址05号BMS,所有编址完成<br>主机: 00 10 91 01 05 CRC<br>从机: 05 10 91 01 02 CRC</p>
+<h2 id="2-3-并包编址逻辑"><a href="#2-3-并包编址逻辑" class="headerlink" title="2.3 并包编址逻辑"></a>2.3 并包编址逻辑</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">	autonumber %显示数字标</span><br><span class="line">	participant 电池包1</span><br><span class="line">	participant 电池包2</span><br><span class="line">	participant 电池包3</span><br><span class="line">	</span><br><span class="line">	电池包1 --&gt;&gt; 电池包1 : 识别到自己为主机，开始执行编址</span><br><span class="line">	电池包1 --&gt;&gt; 电池包2 : 输出ID_OUT</span><br><span class="line">	电池包2 --&gt;&gt; 电池包2 : 收到输出ID_IN，监听总线地址命令</span><br><span class="line">	</span><br><span class="line">	Note over 电池包1,电池包3 : 电池包1发送编电池包编址命令1</span><br><span class="line">	电池包2 --&gt;&gt; 电池包2 : 收到编址命令，设置地址为自己地址</span><br><span class="line">	电池包2 --&gt;&gt; 电池包1 : 回复编址命令1成功</span><br><span class="line">	</span><br><span class="line">	Note over 电池包1,电池包3 : 电池包1发送编电池包编址命令2</span><br><span class="line">	电池包2 --&gt;&gt; 电池包2 : 收到编址命令为下一个包</span><br><span class="line">	电池包2 --&gt;&gt; 电池包3 : 输出ID_OUT</span><br><span class="line">	电池包3 --&gt;&gt; 电池包3 : 收到输出ID_IN，监听总线地址命令</span><br><span class="line">	</span><br><span class="line">	Note over 电池包1,电池包3 : 电池包1发送编电池包编址命令2</span><br><span class="line">	电池包3 --&gt;&gt; 电池包3 : 收到编址命令，设置地址为自己地址</span><br><span class="line">	电池包3 --&gt;&gt; 电池包1 : 回复编址命令完成</span><br><span class="line">	</span><br><span class="line">	电池包1 --&gt;&gt; 电池包1 : 收到编址完成命令，结束编址。</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-主任务"><a href="#3-主任务" class="headerlink" title="3 主任务"></a>3 主任务</h1><h2 id="唤醒判断逻辑"><a href="#唤醒判断逻辑" class="headerlink" title="唤醒判断逻辑"></a>唤醒判断逻辑</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line"></span><br><span class="line">开始--&gt;获取上次是否为主机</span><br><span class="line">获取上次是否为主机&#123;&#123;获取上次是否为主机&#125;&#125; --&gt; |Y| 内置电池包模式</span><br><span class="line">	内置电池包模式&#123;&#123;内置电池包模式&#125;&#125; --&gt; |Y| 设置为主机模式</span><br><span class="line">		设置为主机模式 --&gt; 运行循环任务</span><br><span class="line">	内置电池包模式&#123;&#123;内置电池包模式&#125;&#125; --&gt; |N| 设置为等待模式</span><br><span class="line">		设置为等待模式 --&gt; 运行循环任务</span><br><span class="line">	运行循环任务 --&gt; 结束</span><br><span class="line">获取上次是否为主机 --&gt; |N| 设置为等待模式</span><br></pre></td></tr></table></figure>
+
+<h3 id="循环任务"><a href="#循环任务" class="headerlink" title="循环任务"></a>循环任务</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">当前为主机模式&#123;&#123;当前为主机模式?&#125;&#125;</span><br><span class="line">当前为从机模式&#123;&#123;当前为从机模式?&#125;&#125;</span><br><span class="line">当前为等待模式&#123;&#123;当前为等待模式?&#125;&#125;</span><br><span class="line">当前编址未完成&#123;&#123;当前编址未完成?&#125;&#125;</span><br><span class="line">编写1号从包&#123;&#123;编写1号从包?&#125;&#125;</span><br><span class="line"></span><br><span class="line">开始 --&gt; 当前为主机模式</span><br><span class="line">当前为主机模式 --&gt; |Y| 当前编址未完成</span><br><span class="line">	当前编址未完成 --&gt; |Y| 发送编址命令</span><br><span class="line">		主机发起编址 --&gt; 结束</span><br><span class="line">	当前编址未完成 --&gt; |N| 主机发起数据轮训 --&gt; 结束</span><br><span class="line">当前为主机模式 --&gt; |N| 当前为从机模式</span><br><span class="line">当前为从机模式 --&gt; |Y| 2 --&gt; 结束</span><br><span class="line">当前为从机模式 --&gt; |N| 当前为等待模式</span><br><span class="line">当前为等待模式 --&gt; |Y| 3 --&gt; 结束</span><br><span class="line">当前为等待模式 --&gt; |N| 结束</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">subgraph 发送编址命令</span><br><span class="line">	编写1号从包</span><br><span class="line">		编写1号从包 --&gt; |Y| 输出ID_OUT</span><br><span class="line">			输出ID_OUT --&gt; 主机发起编址</span><br><span class="line">		编写1号从包 --&gt; |N| 主机发起编址</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">subgraph 主机发起数据轮训</span><br><span class="line">	direction TB</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<h4 id="主机发起编址"><a href="#主机发起编址" class="headerlink" title="主机发起编址"></a>主机发起编址</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line"></span><br><span class="line">开始 --&gt; 获取当前并联BMS数</span><br><span class="line">获取当前并联BMS数 --&gt; 当前并联BMS数为0</span><br><span class="line">	当前并联BMS数为0 --&gt; |Y| 设置ID_OUT为使能</span><br><span class="line">		设置ID_OUT为使能 --&gt; 当前并联BMS数+1发送编址命令</span><br><span class="line">	当前并联BMS数为0 --&gt; |N| 当前并联BMS数+1发送编址命令</span><br><span class="line">	当前并联BMS数+1发送编址命令 --&gt; 结束</span><br></pre></td></tr></table></figure>
+
+<h4 id="主机发起数据轮训"><a href="#主机发起数据轮训" class="headerlink" title="主机发起数据轮训"></a>主机发起数据轮训</h4><ol>
+<li>需要有一个命令队列</li>
+<li>命令队列里面没数据了才发起轮询</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="type">uint8_t</span> contPackType;<span class="comment">//控制模式, 01广播 02指定包</span></span><br><span class="line">	<span class="type">uint8_t</span> targetBms;   <span class="comment">//控制目标Bms号</span></span><br><span class="line">	<span class="type">uint8_t</span> buff[<span class="number">32</span>];    <span class="comment">//数据缓存</span></span><br><span class="line">	<span class="type">uint8_t</span> SendCnt;     <span class="comment">//发送次数</span></span><br><span class="line">	<span class="type">uint8_t</span> SendTimeOs;  <span class="comment">//发送时间</span></span><br><span class="line">	<span class="type">uint8_t</span> ResFlg;      <span class="comment">//返回标志</span></span><br><span class="line">&#125;发送队列;</span><br><span class="line"></span><br><span class="line"><span class="type">uint32_t</span> AllResFlg; <span class="comment">//用于描述检查多包的时候的返回情况</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">开始 --&gt; 获取命令队列</span><br><span class="line"></span><br><span class="line">subgraph 获取命令队列</span><br><span class="line">	direction TB</span><br><span class="line">	</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-通讯回调任务"><a href="#4-通讯回调任务" class="headerlink" title="4 通讯回调任务"></a>4 通讯回调任务</h1><h3 id="4-1-主板通讯回调-MB-BMS"><a href="#4-1-主板通讯回调-MB-BMS" class="headerlink" title="4.1 主板通讯回调(MB &lt;–&gt; BMS)"></a>4.1 主板通讯回调(MB &lt;–&gt; BMS)</h3><h3 id="4-2并包端口通讯回调-BMS0-BMS1…BMSn"><a href="#4-2并包端口通讯回调-BMS0-BMS1…BMSn" class="headerlink" title="4.2并包端口通讯回调(BMS0 &lt;–&gt; BMS1…BMSn)"></a>4.2并包端口通讯回调(BMS0 &lt;–&gt; BMS1…BMSn)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">开始 --&gt; 主机模式</span><br><span class="line">主机模式&#123;&#123;主机模式&#125;&#125; --&gt; |Y|运行主机回调函数</span><br><span class="line">	运行主机回调函数 --&gt; 结束</span><br><span class="line">主机模式 --&gt; |N| 运行从机回调函数</span><br><span class="line">	运行从机回调函数 --&gt; 结束</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-1-主机回调函数"><a href="#4-2-1-主机回调函数" class="headerlink" title="4.2.1 主机回调函数"></a>4.2.1 主机回调函数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">主机模式&amp;&amp;地址在地址池内&#123;&#123;主机模式&amp;&amp;地址在地址池内?&#125;&#125;</span><br><span class="line">命令为编址命令&#123;&#123;命令为编址命令?&#125;&#125;</span><br><span class="line"></span><br><span class="line">开始 --&gt; 主机模式&amp;&amp;地址在地址池内</span><br><span class="line">主机模式&amp;&amp;地址在地址池内 --&gt; |N| 结束</span><br><span class="line">主机模式&amp;&amp;地址在地址池内 --&gt; |Y| 命令为编址命令</span><br><span class="line">	命令为编址命令 --&gt; |Y| 回调编址命令 --&gt; 结束</span><br><span class="line">	命令为编址命令 --&gt; |N| 回调命令回调 --&gt;结束</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="4-2-1-1-主机编址回调函数"><a href="#4-2-1-1-主机编址回调函数" class="headerlink" title="4.2.1.1 主机编址回调函数"></a>4.2.1.1 主机编址回调函数</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">编址成功命令&#123;&#123;编址成功命令?&#125;&#125;</span><br><span class="line">编址成功为末包&#123;&#123;编址成功为末包?&#125;&#125;</span><br><span class="line"></span><br><span class="line">开始 --&gt; 编址成功命令 </span><br><span class="line">编址成功命令 --&gt; |N| 结束</span><br><span class="line">编址成功命令 --&gt; |Y| 编址成功为末包</span><br><span class="line">	编址成功为末包 --&gt; |N| 设置并包数量+1</span><br><span class="line">	编址成功为末包 --&gt; |Y| 编址完成</span><br><span class="line">	编址完成 --&gt; 设置并包数量+1</span><br><span class="line">	设置并包数量+1 --&gt; 结束</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="4-2-1-2-主机命令回调函数"><a href="#4-2-1-2-主机命令回调函数" class="headerlink" title="4.2.1.2 主机命令回调函数"></a>4.2.1.2 主机命令回调函数</h5><h3 id="从机回调函数"><a href="#从机回调函数" class="headerlink" title="从机回调函数"></a>从机回调函数</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line"></span><br><span class="line">广播命令或本机命令&#123;&#123;广播命令或本机命令?&#125;&#125;</span><br><span class="line">命令为编址命令&#123;&#123;命令为编址命令?&#125;&#125;</span><br><span class="line"></span><br><span class="line">开始 --&gt; 广播命令或本机命令</span><br><span class="line">广播命令或本机命令 --&gt; |N| 结束</span><br><span class="line">广播命令或本机命令 --&gt; |Y| 命令为编址命令</span><br><span class="line">	命令为编址命令 --&gt; |Y| 编址回调函数</span><br><span class="line">		编址回调函数 --&gt; 结束</span><br><span class="line">	命令为编址命令 --&gt; |N| 命令回调函数</span><br><span class="line">		命令回调函数 --&gt; 结束</span><br></pre></td></tr></table></figure>
+
+<h4 id="编址回调函数"><a href="#编址回调函数" class="headerlink" title="编址回调函数"></a>编址回调函数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line"></span><br><span class="line">编址完成&#123;&#123;编址完成?&#125;&#125;</span><br><span class="line">ID_IN被使能&#123;&#123;ID_IN被使能&#125;&#125; </span><br><span class="line">IN-CHK被使能&#123;&#123;IN-CHK被使能?&#125;&#125;</span><br><span class="line">设置地址为本机地址+1&#123;&#123;设置地址为本机地址+1?&#125;&#125;</span><br><span class="line"></span><br><span class="line">编址回调函数 --&gt; 编址完成</span><br><span class="line">编址完成 --&gt; |N| ID_IN被使能</span><br><span class="line">	ID_IN被使能 --&gt; |N| 结束</span><br><span class="line">	ID_IN被使能 --&gt; |Y| 设置本机地址</span><br><span class="line">		设置本机地址 --&gt; 结束</span><br><span class="line">编址完成 --&gt; |Y| 设置地址为本机地址+1</span><br><span class="line">	设置地址为本机地址+1 --&gt; |N| 结束</span><br><span class="line">	设置地址为本机地址+1 --&gt; |Y| 设置ID_OUT为使能模式</span><br><span class="line">		设置ID_OUT为使能模式 --&gt; 结束</span><br><span class="line">		</span><br><span class="line">subgraph 设置本机地址</span><br><span class="line">	direction TB</span><br><span class="line">	设置当前ID为本机ID --&gt; IN-CHK被使能</span><br><span class="line">	IN-CHK被使能 --&gt; |N| 回复末包编址完成</span><br><span class="line">		回复末包编址完成 --&gt; 设置本机编址完成</span><br><span class="line">	IN-CHK被使能 --&gt; |Y| 回复编址完成后面还有包</span><br><span class="line">			回复编址完成后面还有包 --&gt; 设置本机编址完成</span><br><span class="line">		</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</div><div class="article-licensing box"><div class="licensing-title"><p>电池包通讯与编址</p><p><a href="http://example.com/p/c643e9f32c9247c89a7cb7b70fa4ec52/">http://example.com/p/c643e9f32c9247c89a7cb7b70fa4ec52/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>John Doe</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2025-10-20</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2025-10-20</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=68f2eec7ff633057bc249966&amp;product=privacy-policy-generator" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/resources/aliplay.jpg" alt="Alipay"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/resources/wechatPlay.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/p/e1d27f1b05b54511bcb01429bf8dd590/"><span class="level-item">windows系统右键打开cmd命令窗口</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">Comments</h3><script src="https://giscus.app/client.js" repo="Diminuend/Diminuend.github.io" data-repo="Diminuend/Diminuend.github.io" data-repo-id="R_kgDOQCJJZQ" data-category-id="DIC_kwDOQCJJZc4CwyBu" data-category="Announcements" data-mapping="pathname" data-strict="0" data-reactions-enabled="0" data-emit-metadata="0" data-input-position="bottom" data-theme="noborder_light" data-lang="zh-CN" crossorigin="anonymous" async></script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/resources/avatar..jpg" alt="Dim_峰"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Dim_峰</p><p class="is-size-6 is-block">为梦想而努力！</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>东莞，广东</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives/"><p class="title">8</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories/"><p class="title">5</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags/"><p class="title">4</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/Diminuend" target="_blank" rel="me noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/Diminuend"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="EMAIL" href="mailto:937328303@qq.com"><i class="fas fa-envelope"></i></a></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-10-20T00:11:07.114Z">2025-10-20</time></p><p class="title"><a href="/p/c643e9f32c9247c89a7cb7b70fa4ec52/">电池包通讯与编址</a></p><p class="categories"><a href="/categories/BMS/">BMS</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-10-09T02:57:26.429Z">2025-10-09</time></p><p class="title"><a href="/p/e1d27f1b05b54511bcb01429bf8dd590/">windows系统右键打开cmd命令窗口</a></p><p class="categories"><a href="/categories/%E6%9D%82%E9%A1%B9%E7%9F%A5%E8%AF%86/">杂项知识</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-23T07:38:18.015Z">2025-05-23</time></p><p class="title"><a href="/p/a170a61759d34e2283c05f05a9430426/">VSCODE开发环境安装说明</a></p><p class="categories"><a href="/categories/VSCode/">VSCode</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-13T08:59:16.648Z">2025-05-13</time></p><p class="title"><a href="/p/459ea392bc8d45d2849ad16d238600ee/">VSCode Cortex Debug</a></p><p class="categories"><a href="/categories/VSCode/">VSCode</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-13T08:58:07.394Z">2025-05-13</time></p><p class="title"><a href="/p/649142f2b0474564855a0e6d9f562ce1/">Specifying SVD Files - Marus/cortex-debug GitHub Wiki</a></p><p class="categories"><a href="/categories/VSCode/">VSCode</a></p></div></article></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/python/"><span class="tag">python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vs-code-debug/"><span class="tag">vs code debug</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vscode-%E6%8F%92%E4%BB%B6/"><span class="tag">vscode 插件</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8F%8C%E5%90%91dc/"><span class="tag">双向dc</span><span class="tag">1</span></a></div></div></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><!--!--><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/BMS/"><span class="level-start"><span class="level-item">BMS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/DcDc/"><span class="level-start"><span class="level-item">DcDc</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/VSCode/"><span class="level-start"><span class="level-item">VSCode</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E9%A1%B9%E7%9F%A5%E8%AF%86/"><span class="level-start"><span class="level-item">杂项知识</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2025/10/"><span class="level-start"><span class="level-item">October 2025</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/05/"><span class="level-start"><span class="level-item">May 2025</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/02/"><span class="level-start"><span class="level-item">February 2025</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/08/"><span class="level-start"><span class="level-item">August 2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2023/10/"><span class="level-start"><span class="level-item">October 2023</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg" alt="Diminuend" height="28"></a><p class="is-size-7"><span>&copy; 2025 John Doe</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">漏 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Diminuend"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>
