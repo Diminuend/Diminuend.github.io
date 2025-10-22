@@ -1,155 +1,212 @@
-<!doctype html>
-<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Diminuend</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Diminuend"><meta name="msapplication-TileImage" content="/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Diminuend"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Diminuend"><meta property="og:url" content="http://example.com/"><meta property="og:site_name" content="Diminuend"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:author" content="John Doe"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://example.com/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com"},"headline":"Diminuend","image":["http://example.com/img/og_image.png"],"author":{"@type":"Person","name":"John Doe"},"publisher":{"@type":"Organization","name":"Diminuend","logo":{"@type":"ImageObject","url":"http://example.com/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg"}},"description":""}</script><link rel="icon" href="/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/Monokai.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script>var _hmt = _hmt || [];
-        (function() {
-            var hm = document.createElement("script");
-            hm.src = "//hm.baidu.com/hm.js?3b3fa51899dc5681385538e5bc51861d";
-            var s = document.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(hm, s);
-        })();</script><meta name="msvalidate.01" content="AA08BAB3DB3C9052C9B8EC5F6F4CE2AB"><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-RP7MMHL7NP" async></script><script>window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-    
-        gtag('config', 'G-RP7MMHL7NP');</script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css"><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha512-fHwaWebuwA7NSF5Qg/af4UeDx9XqUpYpOGgubo3yWu+b2IQR4UeQwbb42Ti7gVAjNtVoI/I9TEoYeu9omwcC6g==" crossorigin="anonymous" referrerpolicy="no-referrer" /><script>
-  (function () {
-      function switchTab() {
-          if (!location.hash) {
-            return;
-          }
-
-          const id = '#' + CSS.escape(location.hash.substring(1));
-          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
-          if (!$tabMenu) {
-            return;
-          }
-
-          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
-          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
-          Array.from($tabMenuContainer.querySelectorAll('a'))
-              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
-              .forEach($content => $content.classList.add('is-hidden'));
-
-          if ($tabMenu) {
-              $tabMenu.parentElement.classList.add('is-active');
-          }
-          const $activeTab = document.querySelector(id);
-          if ($activeTab) {
-              $activeTab.classList.remove('is-hidden');
-          }
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Diminuend</title><meta name="author" content="Dim_峰"><meta name="copyright" content="Dim_峰"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="Diminuend">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="Diminuend">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/resources/avatar..jpg">
+<meta property="article:author" content="Dim_峰">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/resources/avatar..jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Diminuend",
+  "alternateName": [
+    "example.com"
+  ],
+  "url": "http://example.com/"
+}</script><link rel="shortcut icon" href="/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg"><link rel="canonical" href="http://example.com/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
       }
-      switchTab();
-      window.addEventListener('hashchange', switchTab, false);
-  })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg" alt="Diminuend" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item is-active" href="/">Home</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Diminuend"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-10-20T00:11:07.114Z" title="10/20/2025, 8:11:07 AM">2025-10-20</time>发表</span><span class="level-item"><time dateTime="2025-10-20T00:12:37.792Z" title="10/20/2025, 8:12:37 AM">2025-10-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/BMS/">BMS</a></span><span class="level-item">17 分钟读完 (大约2496个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/p/c643e9f32c9247c89a7cb7b70fa4ec52/">电池包通讯与编址</a></p><div class="content"><h2 id="1-1-输入端口-接上一个电池包"><a href="#1-1-输入端口-接上一个电池包" class="headerlink" title="1.1 输入端口-接上一个电池包"></a>1.1 输入端口-接上一个电池包</h2><table>
-<thead>
-<tr>
-<th align="center">PIN号</th>
-<th align="center">PIN名</th>
-<th align="center">PIN方向</th>
-<th align="center">说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">1</td>
-<td align="center">EN</td>
-<td align="center">输入</td>
-<td align="center">唤醒电池包</td>
-</tr>
-<tr>
-<td align="center">2</td>
-<td align="center">ID_IN</td>
-<td align="center">输入</td>
-<td align="center"></td>
-</tr>
-<tr>
-<td align="center">3</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr>
-<td align="center">4</td>
-<td align="center">485-A</td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr>
-<td align="center">5</td>
-<td align="center">485-B</td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr>
-<td align="center">6</td>
-<td align="center">GNDD</td>
-<td align="center"></td>
-<td align="center">接地</td>
-</tr>
-<tr>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-</tbody></table>
-<h2 id="1-2-输出端口-接下一个电池包"><a href="#1-2-输出端口-接下一个电池包" class="headerlink" title="1.2 输出端口-接下一个电池包"></a>1.2 输出端口-接下一个电池包</h2></div><a class="article-more button is-small is-size-7" href="/p/c643e9f32c9247c89a7cb7b70fa4ec52/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-10-09T02:57:26.429Z" title="10/9/2025, 10:57:26 AM">2025-10-09</time>发表</span><span class="level-item"><time dateTime="2025-10-13T06:44:34.221Z" title="10/13/2025, 2:44:34 PM">2025-10-13</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%9D%82%E9%A1%B9%E7%9F%A5%E8%AF%86/">杂项知识</a></span><span class="level-item">1 分钟读完 (大约214个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/p/e1d27f1b05b54511bcb01429bf8dd590/">windows系统右键打开cmd命令窗口</a></p><div class="content"><h2 id="windows系统右键打开cmd命令窗口"><a href="#windows系统右键打开cmd命令窗口" class="headerlink" title="windows系统右键打开cmd命令窗口"></a>windows系统右键打开cmd命令窗口</h2><p>前一阵子一直在Linux下进行编程开发和学习，最近换回在Windows下了，感觉不是那么适应了，总是希望Windows能有像Linux那样，在任意文件或文件夹下右键就能到命令终端，今天这个问题终于解决了。</p>
-<p>解决方案为：</p></div><a class="article-more button is-small is-size-7" href="/p/e1d27f1b05b54511bcb01429bf8dd590/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-23T07:38:18.015Z" title="5/23/2025, 3:38:18 PM">2025-05-23</time>发表</span><span class="level-item"><time dateTime="2025-10-17T00:09:30.142Z" title="10/17/2025, 8:09:30 AM">2025-10-17</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/VSCode/">VSCode</a></span><span class="level-item">2 分钟读完 (大约373个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/p/a170a61759d34e2283c05f05a9430426/">VSCODE开发环境安装说明</a></p><div class="content"><p>VS CODE开发环境安装说明</p>
-<h1 id="一、下载好软件安装包"><a href="#一、下载好软件安装包" class="headerlink" title="一、下载好软件安装包"></a>一、下载好软件安装包</h1><p>1.GCC—-编译和调试<br>2.J-LINK—配合J-LINK仿真器支持调试和下载<br>3. MSYS—Linux命令行支持，这里主要使用make<br>4.VS CODE—IDE</p></div><a class="article-more button is-small is-size-7" href="/p/a170a61759d34e2283c05f05a9430426/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-13T08:59:16.648Z" title="5/13/2025, 4:59:16 PM">2025-05-13</time>发表</span><span class="level-item"><time dateTime="2025-10-17T00:12:07.113Z" title="10/17/2025, 8:12:07 AM">2025-10-17</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/VSCode/">VSCode</a></span><span class="level-item">4 分钟读完 (大约595个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/p/459ea392bc8d45d2849ad16d238600ee/">VSCode Cortex Debug</a></p><div class="content"><p>需要安装”Cortex-Debug”插件使用<br><img src="/resources/ead2ee502bc74508bd6e2252313f29a9.png" alt="e8c6478d49a0704222eddffa29cf20f8.png"></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">cwd:项目路径</span><br><span class="line">configFiles:要加载的OpenOCD配置文件</span><br><span class="line">device:目标设备标识符</span><br><span class="line">接口:用于连接的调试接口类型(默认为SWD) -用于J-Link和BMP探针。</span><br><span class="line">name:配置名称;显示在启动配置下拉菜单中。</span><br><span class="line">preLaunchTask:在调试会话开始之前运行的任务。指定在tasks.json中定义的任务。</span><br><span class="line">request:配置请求类型。可以是“发射”或“附加”。</span><br><span class="line">runToEntryPoint:如果启用，调试器将运行，直到主函数开始。</span><br><span class="line">serialNumber: J-Link专用参数。J-Link序列号-仅当多个J-Link连接到计算机时需要</span><br><span class="line">servertype: GDB服务器类型—支持jlink、openocd、pyocd、pe、stutil</span><br><span class="line">svdFile:描述微控制器外设的SVD文件的路径;如果没有提供，那么可以根据输入的“设备”选择一个。这可能会根据“设备”自动加载。</span><br><span class="line">swoConfig: SWO/ITM配置。</span><br><span class="line">enabled:开启SWO解码。</span><br><span class="line">cpuFrequency: CPU的目标频率，单位为Hz。</span><br><span class="line">swoffrequency: SWO频率，单位为Hz。</span><br><span class="line">source:SWO数据来源。可以是“探针”直接从调试探针获得，也可以是串行端口设备使用调试探针外部的串行端口。</span><br><span class="line">decoders:SWO解码器配置</span><br><span class="line">label:输出窗口的标签。</span><br><span class="line">port: ITM端口号</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    }
 
-<p>“launch.json”配置文件内容</p></div><a class="article-more button is-small is-size-7" href="/p/459ea392bc8d45d2849ad16d238600ee/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-13T08:58:07.394Z" title="5/13/2025, 4:58:07 PM">2025-05-13</time>发表</span><span class="level-item"><time dateTime="2025-05-13T08:58:07.394Z" title="5/13/2025, 4:58:07 PM">2025-05-13</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/VSCode/">VSCode</a></span><span class="level-item">2 分钟读完 (大约237个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/p/649142f2b0474564855a0e6d9f562ce1/">Specifying SVD Files - Marus/cortex-debug GitHub Wiki</a></p><div class="content"><p>Content mirrored for search engine indexing from:</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/Marus/cortex-debug/wiki/Specifying-SVD-Files">https://github.com/Marus/cortex-debug/wiki/Specifying-SVD-Files</a></p>
-<p><a target="_blank" rel="noopener" href="https://github-wiki-see.page/">Why does this service exist?</a></p></div><a class="article-more button is-small is-size-7" href="/p/649142f2b0474564855a0e6d9f562ce1/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-02-26T02:45:32.719Z" title="2/26/2025, 10:45:32 AM">2025-02-26</time>发表</span><span class="level-item"><time dateTime="2025-10-13T09:28:35.772Z" title="10/13/2025, 5:28:35 PM">2025-10-13</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/VSCode/">VSCode</a></span><span class="level-item">4 分钟读完 (大约650个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/p/107b3c174e1d4974ac796d377119aa01/">VSCode 自动生成注释 Doxygen Documentation Generator</a></p><div class="content"><h2 id="插件："><a href="#插件：" class="headerlink" title="插件："></a>插件：</h2><p><img src="/resources/19641c32c51a4e4087af56a44e2f2159.png" alt="e10f0c4a79b2881348be5fa0f4373281.png"><br><img src="/resources/cf39cc6b74404d7aaf2ade2614494ccf.png" alt="142d1505879b7d9c689cd3773fe01794.png"></p>
-<h2 id="配置规则如下："><a href="#配置规则如下：" class="headerlink" title="配置规则如下："></a>配置规则如下：</h2></div><a class="article-more button is-small is-size-7" href="/p/107b3c174e1d4974ac796d377119aa01/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2024-08-30T03:52:55.001Z" title="8/30/2024, 11:52:55 AM">2024-08-30</time>发表</span><span class="level-item"><time dateTime="2025-10-18T05:45:08.410Z" title="10/18/2025, 1:45:08 PM">2025-10-18</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/DcDc/">DcDc</a></span><span class="level-item">6 分钟读完 (大约832个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/p/6eedda635ed14b49b8735710c2ed3327/">电感相关知识</a></p><div class="content"><p>交流电也可以通过线圈，但是线圈的电感对交流电有阻碍作用，这个阻碍叫做感抗。交流电越难以通过线圈，说明电感量越大，电感的阻碍作用就越大；交流电的频率高，也难以通过线圈，电感的阻碍作用也大。实验证明，感抗和电感成正比，和频率也成正比。如果感抗用XL表示，电感用L表示，频率用f表示，那么其计算公式为：</p>
-<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mi>L</mi></msub><mo>=</mo><mn>2</mn><mi>π</mi><mi>f</mi><mi>L</mi><mo>=</mo><mi>ω</mi><mi>L</mi></mrow><annotation encoding="application/x-tex">X_L = 2 \pi f L = \omega L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">L</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">L</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">ω</span><span class="mord mathnormal">L</span></span></span></span>
-<p>感抗的单位是欧。知道了交流电的频率f(Hz)和线圈的电感L(H)，就可以用上式把感抗计算出来。电感的单位是“亨利（H）”我们可利用电流与线圈的这种特殊性质来制成不同大小数值的电感器件，以组成不同功能的电路系统网络.<br>公式详解</p></div><a class="article-more button is-small is-size-7" href="/p/6eedda635ed14b49b8735710c2ed3327/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-10-31T08:16:05.994Z" title="10/31/2023, 4:16:05 PM">2023-10-31</time>发表</span><span class="level-item"><time dateTime="2025-08-26T01:35:40.291Z" title="8/26/2025, 9:35:40 AM">2025-08-26</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/Python/">Python</a></span><span class="level-item">几秒读完 (大约18个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/p/4c27a52fa6074968a591f169ad413f28/">Python打包exe</a></p><div class="content"><p>按照打包工具<br><code>pip install pyinstaller</code><br>打包命令<br><code>pyinstaller -F .\Extract_images.py</code></p>
-</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/resources/avatar..jpg" alt="Dim_峰"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Dim_峰</p><p class="is-size-6 is-block">为梦想而努力！</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>东莞，广东</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">8</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">5</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">4</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/Diminuend" target="_blank" rel="me noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="Github" href="https://github.com/Diminuend"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="EMAIL" href="mailto:937328303@qq.com"><i class="fas fa-envelope"></i></a></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/python/"><span class="tag">python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vs-code-debug/"><span class="tag">vs code debug</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vscode-%E6%8F%92%E4%BB%B6/"><span class="tag">vscode 插件</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8F%8C%E5%90%91dc/"><span class="tag">双向dc</span><span class="tag">1</span></a></div></div></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-10-20T00:11:07.114Z">2025-10-20</time></p><p class="title"><a href="/p/c643e9f32c9247c89a7cb7b70fa4ec52/">电池包通讯与编址</a></p><p class="categories"><a href="/categories/BMS/">BMS</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-10-09T02:57:26.429Z">2025-10-09</time></p><p class="title"><a href="/p/e1d27f1b05b54511bcb01429bf8dd590/">windows系统右键打开cmd命令窗口</a></p><p class="categories"><a href="/categories/%E6%9D%82%E9%A1%B9%E7%9F%A5%E8%AF%86/">杂项知识</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-23T07:38:18.015Z">2025-05-23</time></p><p class="title"><a href="/p/a170a61759d34e2283c05f05a9430426/">VSCODE开发环境安装说明</a></p><p class="categories"><a href="/categories/VSCode/">VSCode</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-13T08:59:16.648Z">2025-05-13</time></p><p class="title"><a href="/p/459ea392bc8d45d2849ad16d238600ee/">VSCode Cortex Debug</a></p><p class="categories"><a href="/categories/VSCode/">VSCode</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-13T08:58:07.394Z">2025-05-13</time></p><p class="title"><a href="/p/649142f2b0474564855a0e6d9f562ce1/">Specifying SVD Files - Marus/cortex-debug GitHub Wiki</a></p><p class="categories"><a href="/categories/VSCode/">VSCode</a></p></div></article></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/BMS/"><span class="level-start"><span class="level-item">BMS</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/DcDc/"><span class="level-start"><span class="level-item">DcDc</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Python/"><span class="level-start"><span class="level-item">Python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/VSCode/"><span class="level-start"><span class="level-item">VSCode</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%9D%82%E9%A1%B9%E7%9F%A5%E8%AF%86/"><span class="level-start"><span class="level-item">杂项知识</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg" alt="Diminuend" height="28"></a><p class="is-size-7"><span>&copy; 2025 John Doe</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">漏 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Diminuend"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
-            article: {
-                highlight: {
-                    clipboard: true,
-                    fold: 'unfolded'
-                }
-            }
-        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
-      window.cookieconsent.initialise({
-        type: "info",
-        theme: "edgeless",
-        static: false,
-        position: "bottom-left",
-        content: {
-          message: "此网站使用Cookie来改善您的体验。",
-          dismiss: "知道了！",
-          allow: "允许使用Cookie",
-          deny: "拒绝",
-          link: "了解更多",
-          policy: "Cookie政策",
-          href: "https://www.cookiesandyou.com/",
-        },
-        palette: {
-          popup: {
-            background: "#edeff5",
-            text: "#838391"
-          },
-          button: {
-            background: "#4b81e8"
-          },
-        },
-      });
-    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
-            if (typeof $.fn.lightGallery === 'function') {
-                $('.article').lightGallery({ selector: '.gallery-item' });
-            }
-            if (typeof $.fn.justifiedGallery === 'function') {
-                if ($('.justified-gallery > p > .gallery-item').length) {
-                    $('.justified-gallery > p > .gallery-item').unwrap();
-                }
-                $('.justified-gallery').justifiedGallery();
-            }
-        });</script><!--!--><!--!--><div id="outdated"><h6>Your browser is out-of-date!</h6><p>Update your browser to view this website correctly.&amp;npsb;<a id="btnUpdateBrowser" target="_blank" rel="noopener" href="http://outdatedbrowser.com/">Update my browser now </a></p><p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">×</a></p></div><script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script><script>window.addEventListener("load", function () {
-            outdatedBrowser({
-                bgColor: '#f25648',
-                color: '#ffffff',
-                lowerThan: 'object-fit' // display on IE11 or below
-            });
-        });</script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
-            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
-        });</script></body></html>
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Diminuend',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha512-fHwaWebuwA7NSF5Qg/af4UeDx9XqUpYpOGgubo3yWu+b2IQR4UeQwbb42Ti7gVAjNtVoI/I9TEoYeu9omwcC6g==" crossorigin="anonymous" referrerpolicy="no-referrer" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/resources/avatar..jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Diminuend</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">Diminuend</h1><div id="site_social_icons"><a class="social-icon" href="https://github.com/Diminuend" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:937328303@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/p/c643e9f32c9247c89a7cb7b70fa4ec52/" title="电池包通讯与编址">电池包通讯与编址</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-10-20T00:11:07.114Z" title="发表于 2025-10-20 08:11:07">2025-10-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/BMS/">BMS</a></span></div><div class="content">1.1 输入端口-接上一个电池包   PIN号 PIN名 PIN方向 说明    1 EN 输入 唤醒电池包   2 ID_IN 输入    3      4 485-A     5 485-B     6 GNDD  接地         1.2 输出端口-接下一个电池包   PIN号 PIN名 PIN方向 说明    1 EN 输入 唤醒电池包   2 ID_OPUT 输入    3      4 485-A     5 485-B     6 IN-CHK 输入 端口拉低，MCU脚被拉高说明后面有接入         1.3 接口对插说明   PIN号 上一个包PIN 下一个包PIN 说明    1 EN EN 唤醒电池包，通常是主机的唤醒边缘或者按钮   2 ID_OUT ID_IN 使用上个BMS的IO来控制下个的电池包是否编址   3      4 485-A RS485-A-2    5 485-B RS485-B-2    6 IN-CHK GNDD 端口拉低，MCU脚被拉高说明后面有接入   2 基本描述 开机默认为加电包 收到主板消息后确认自己为主包 开始发起...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/p/e1d27f1b05b54511bcb01429bf8dd590/" title="windows系统右键打开cmd命令窗口">windows系统右键打开cmd命令窗口</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-10-09T02:57:26.429Z" title="发表于 2025-10-09 10:57:26">2025-10-09</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%9D%82%E9%A1%B9%E7%9F%A5%E8%AF%86/">杂项知识</a></span></div><div class="content">windows系统右键打开cmd命令窗口前一阵子一直在Linux下进行编程开发和学习，最近换回在Windows下了，感觉不是那么适应了，总是希望Windows能有像Linux那样，在任意文件或文件夹下右键就能到命令终端，今天这个问题终于解决了。 解决方案为： Windows系统任意文件夹下新建文本文件，写入以下内容： 1234567Windows Registry Editor Version 5.00[HKEY_CLASSES_ROOT\Directory\Background\shell\OpenCMD]&quot;ShowBasedOnVelocityId&quot;=dword:00639bc8[HKEY_CLASSES_ROOT\Directory\Background\shell\OpenCMD\command]@=&quot;powershell.exe -noexit -command Set-Location -literalPath &#x27;%V&#x27;&quot;  保存，重新命名为command.reg   后缀一定要是reg的。然后直接双击执行此...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/p/a170a61759d34e2283c05f05a9430426/" title="VSCODE开发环境安装说明">VSCODE开发环境安装说明</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-05-23T07:38:18.015Z" title="发表于 2025-05-23 15:38:18">2025-05-23</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/VSCode/">VSCode</a></span></div><div class="content">VS CODE开发环境安装说明 一、下载好软件安装包1.GCC—-编译和调试2.J-LINK—配合J-LINK仿真器支持调试和下载3. MSYS—Linux命令行支持，这里主要使用make4.VS CODE—IDE 二、安装软件包1.GCC（gcc-arm-none-eabi-10.3-2021.10-win32）—-直接安装2.J-LINK（V7.82c）3. MSYS—直接解压4.VS CODE—直接安装 三、环境变量设置这里演示的是默认安装路径，需要根据自己的安装路径进行修改，需要添加msys、Jlink、gcc的安装路径，如下图； 四、VSCODE插件安装需要安装cortex-debug插件以支持调试，直接在vscode插件搜索安装，安装完之后需要设置jlink和gcc安装路径，如下图；    以下可复制 12    &quot;cortex-debug.JLinkGDBServerPath&quot;: &quot;C:\\Program Files (x86)\\SEGGER\\JLink\\JLinkGDBServerCL.exe&quot;,    &quot;c...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/p/459ea392bc8d45d2849ad16d238600ee/" title="VSCode Cortex Debug">VSCode Cortex Debug</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-05-13T08:59:16.648Z" title="发表于 2025-05-13 16:59:16">2025-05-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/VSCode/">VSCode</a></span></div><div class="content">需要安装”Cortex-Debug”插件使用 1234567891011121314151617181920cwd:项目路径configFiles:要加载的OpenOCD配置文件device:目标设备标识符接口:用于连接的调试接口类型(默认为SWD) -用于J-Link和BMP探针。name:配置名称;显示在启动配置下拉菜单中。preLaunchTask:在调试会话开始之前运行的任务。指定在tasks.json中定义的任务。request:配置请求类型。可以是“发射”或“附加”。runToEntryPoint:如果启用，调试器将运行，直到主函数开始。serialNumber: J-Link专用参数。J-Link序列号-仅当多个J-Link连接到计算机时需要servertype: GDB服务器类型—支持jlink、openocd、pyocd、pe、stutilsvdFile:描述微控制器外设的SVD文件的路径;如果没有提供，那么可以根据输入的“设备”选择一个。这可能会根据“设备”自动加载。swoConfig: SWO/ITM配置。enabled:开启SWO解码。cpuFrequen...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/p/649142f2b0474564855a0e6d9f562ce1/" title="Specifying SVD Files - Marus/cortex-debug GitHub Wiki">Specifying SVD Files - Marus/cortex-debug GitHub Wiki</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-05-13T08:58:07.394Z" title="发表于 2025-05-13 16:58:07">2025-05-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/VSCode/">VSCode</a></span></div><div class="content">Content mirrored for search engine indexing from: https://github.com/Marus/cortex-debug/wiki/Specifying-SVD-Files Why does this service exist? 📅 Last Modified: Thu, 21 Apr 2022 21:28:37 GMT Specifying SVD Files - Marus&#x2F;cortex-debug GitHub WikiThe Cortex-Debug Extension uses System View Description (SVD) files to display information about the selected part, including the Cortex Peripherals view. There are two options for specifying an SVD file:  Obtain the SVD file from your device manuf...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/p/107b3c174e1d4974ac796d377119aa01/" title="VSCode 自动生成注释 Doxygen Documentation Generator">VSCode 自动生成注释 Doxygen Documentation Generator</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-02-26T02:45:32.719Z" title="发表于 2025-02-26 10:45:32">2025-02-26</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/VSCode/">VSCode</a></span></div><div class="content">插件： 配置规则如下：· 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182    // The prefix that is used for each comment line except for first and last.    &quot;doxdocgen.c.commentPrefix&quot;: &quot; * &quot;,    // Smart text snippet for factory methods/functions.    &quot;doxdocgen.c.factoryMethodText&quot;: &quot;Create a &#123;name&#125; object&quot;,    // Smart text snippet for getters.    &...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/p/6eedda635ed14b49b8735710c2ed3327/" title="电感相关知识">电感相关知识</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-08-30T03:52:55.001Z" title="发表于 2024-08-30 11:52:55">2024-08-30</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/DcDc/">DcDc</a></span></div><div class="content">交流电也可以通过线圈，但是线圈的电感对交流电有阻碍作用，这个阻碍叫做感抗。交流电越难以通过线圈，说明电感量越大，电感的阻碍作用就越大；交流电的频率高，也难以通过线圈，电感的阻碍作用也大。实验证明，感抗和电感成正比，和频率也成正比。如果感抗用XL表示，电感用L表示，频率用f表示，那么其计算公式为： XL=2πfL=ωLX_L = 2 \pi f L = \omega LXL​=2πfL=ωL 感抗的单位是欧。知道了交流电的频率f(Hz)和线圈的电感L(H)，就可以用上式把感抗计算出来。电感的单位是“亨利（H）”我们可利用电流与线圈的这种特殊性质来制成不同大小数值的电感器件，以组成不同功能的电路系统网络.公式详解 各种公式电感电压公式（L-V公式）u=−L∗di/dtu=-L*di/dtu=−L∗di/dt  其中V为电感中的电压，L为电感线圈的电感，di&#x2F;dt为电流变化率。 感抗公式详解XL=2πfL=ωLX_L = 2 \pi f L = \omega LXL​=2πfL=ωL     符号 描述 单位    XLX_LXL​ 感抗 欧姆   ω\omegaω 交流发电...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/p/4c27a52fa6074968a591f169ad413f28/" title="Python打包exe">Python打包exe</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-10-31T08:16:05.994Z" title="发表于 2023-10-31 16:16:05">2023-10-31</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Python/">Python</a></span></div><div class="content">按照打包工具pip install pyinstaller打包命令pyinstaller -F .\Extract_images.py </div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/resources/avatar..jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Dim_峰</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Diminuend"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Diminuend" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:937328303@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">为梦想而努力！</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/p/c643e9f32c9247c89a7cb7b70fa4ec52/" title="电池包通讯与编址">电池包通讯与编址</a><time datetime="2025-10-20T00:11:07.114Z" title="发表于 2025-10-20 08:11:07">2025-10-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/p/e1d27f1b05b54511bcb01429bf8dd590/" title="windows系统右键打开cmd命令窗口">windows系统右键打开cmd命令窗口</a><time datetime="2025-10-09T02:57:26.429Z" title="发表于 2025-10-09 10:57:26">2025-10-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/p/a170a61759d34e2283c05f05a9430426/" title="VSCODE开发环境安装说明">VSCODE开发环境安装说明</a><time datetime="2025-05-23T07:38:18.015Z" title="发表于 2025-05-23 15:38:18">2025-05-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/p/459ea392bc8d45d2849ad16d238600ee/" title="VSCode Cortex Debug">VSCode Cortex Debug</a><time datetime="2025-05-13T08:59:16.648Z" title="发表于 2025-05-13 16:59:16">2025-05-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/p/649142f2b0474564855a0e6d9f562ce1/" title="Specifying SVD Files - Marus/cortex-debug GitHub Wiki">Specifying SVD Files - Marus/cortex-debug GitHub Wiki</a><time datetime="2025-05-13T08:58:07.394Z" title="发表于 2025-05-13 16:58:07">2025-05-13</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/BMS/"><span class="card-category-list-name">BMS</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/DcDc/"><span class="card-category-list-name">DcDc</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Python/"><span class="card-category-list-name">Python</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/VSCode/"><span class="card-category-list-name">VSCode</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%9D%82%E9%A1%B9%E7%9F%A5%E8%AF%86/"><span class="card-category-list-name">杂项知识</span><span class="card-category-list-count">1</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/vs-code-debug/" style="font-size: 1.5em; color: #99a9bf">vs code debug</a> <a href="/tags/vscode-%E6%8F%92%E4%BB%B6/" style="font-size: 1.5em; color: #99a9bf">vscode 插件</a> <a href="/tags/%E5%8F%8C%E5%90%91dc/" style="font-size: 1.1em; color: #999">双向dc</a> <a href="/tags/python/" style="font-size: 1.1em; color: #999">python</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/10/">
+            <span class="card-archive-list-date">
+              十月 2025
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/05/">
+            <span class="card-archive-list-date">
+              五月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/02/">
+            <span class="card-archive-list-date">
+              二月 2025
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/08/">
+            <span class="card-archive-list-date">
+              八月 2024
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2023/10/">
+            <span class="card-archive-list-date">
+              十月 2023
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">8</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-10-22T02:58:38.776Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Dim_峰</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
