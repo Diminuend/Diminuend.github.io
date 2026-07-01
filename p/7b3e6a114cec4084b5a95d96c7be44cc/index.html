@@ -1,0 +1,779 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>OpenChaoJi EVCC HAL 移植、初始化与接口说明文档 | Diminuend</title><meta name="author" content="Dim_峰"><meta name="copyright" content="Dim_峰"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="OpenChaoJi EVCC HAL 移植、初始化与接口说明文档本设计文档旨在指导软件工程师将 OpenChaoJi EVCC（电动汽车通信控制器）协议栈移植到目标硬件平台上。HAL（硬件抽象层）隔离了上层协议栈与底层微控制器的硬件外设（如 CAN、ADC、GPIO、RTC 及 OS 延时等）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenChaoJi EVCC HAL 移植、初始化与接口说明文档">
+<meta property="og:url" content="http://example.com/p/7b3e6a114cec4084b5a95d96c7be44cc/index.html">
+<meta property="og:site_name" content="Diminuend">
+<meta property="og:description" content="OpenChaoJi EVCC HAL 移植、初始化与接口说明文档本设计文档旨在指导软件工程师将 OpenChaoJi EVCC（电动汽车通信控制器）协议栈移植到目标硬件平台上。HAL（硬件抽象层）隔离了上层协议栈与底层微控制器的硬件外设（如 CAN、ADC、GPIO、RTC 及 OS 延时等）。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/resources/avatar..jpg">
+<meta property="article:published_time" content="2026-07-01T09:32:55.923Z">
+<meta property="article:modified_time" content="2026-07-01T09:34:59.232Z">
+<meta property="article:author" content="Dim_峰">
+<meta property="article:tag" content="OpenChaoJi">
+<meta property="article:tag" content="国标直流充电">
+<meta property="article:tag" content="GBT27930">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/resources/avatar..jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "OpenChaoJi EVCC HAL 移植、初始化与接口说明文档",
+  "url": "http://example.com/p/7b3e6a114cec4084b5a95d96c7be44cc/",
+  "image": "http://example.com/resources/avatar..jpg",
+  "datePublished": "2026-07-01T09:32:55.923Z",
+  "dateModified": "2026-07-01T09:34:59.232Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Dim_峰",
+      "url": "http://example.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/resources/3b048a6e-e486-41ca-92bb-0a9ea829e198.jpg"><link rel="canonical" href="http://example.com/p/7b3e6a114cec4084b5a95d96c7be44cc/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'OpenChaoJi EVCC HAL 移植、初始化与接口说明文档',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" integrity="sha512-fHwaWebuwA7NSF5Qg/af4UeDx9XqUpYpOGgubo3yWu+b2IQR4UeQwbb42Ti7gVAjNtVoI/I9TEoYeu9omwcC6g==" crossorigin="anonymous" referrerpolicy="no-referrer" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/resources/avatar..jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">14</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Diminuend</span></a><a class="nav-page-title" href="/"><span class="site-name">OpenChaoJi EVCC HAL 移植、初始化与接口说明文档</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">OpenChaoJi EVCC HAL 移植、初始化与接口说明文档</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-07-01T09:32:55.923Z" title="发表于 2026-07-01 17:32:55">2026-07-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-01T09:34:59.232Z" title="更新于 2026-07-01 17:34:59">2026-07-01</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E6%9C%AF%E5%B9%B3%E5%8F%B0/">技术平台</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E6%9C%AF%E5%B9%B3%E5%8F%B0/%E7%9B%B4%E6%B5%81%E5%85%85%E7%94%B5/">直流充电</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="OpenChaoJi-EVCC-HAL-移植、初始化与接口说明文档"><a href="#OpenChaoJi-EVCC-HAL-移植、初始化与接口说明文档" class="headerlink" title="OpenChaoJi EVCC HAL 移植、初始化与接口说明文档"></a>OpenChaoJi EVCC HAL 移植、初始化与接口说明文档</h1><p>本设计文档旨在指导软件工程师将 OpenChaoJi EVCC（电动汽车通信控制器）协议栈移植到目标硬件平台上。HAL（硬件抽象层）隔离了上层协议栈与底层微控制器的硬件外设（如 CAN、ADC、GPIO、RTC 及 OS 延时等）。</p>
+<hr>
+<h2 id="1-核心数据结构定义"><a href="#1-核心数据结构定义" class="headerlink" title="1. 核心数据结构定义"></a>1. 核心数据结构定义</h2><p>在移植和实现 HAL 接口之前，请先确保以下数据结构在您的代码中定义一致。</p>
+<h3 id="1-1-CAN-标识符与报文定义-union-can-id-t-struct-can-pdu"><a href="#1-1-CAN-标识符与报文定义-union-can-id-t-struct-can-pdu" class="headerlink" title="1.1 CAN 标识符与报文定义 (union can_id_t &amp; struct can_pdu)"></a>1.1 CAN 标识符与报文定义 (<code>union can_id_t</code> &amp; <code>struct can_pdu</code>)</h3><p>OpenChaoJi 的 CAN 通信遵循类似于 SAE J1939 标准的 29 位扩展帧格式。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">union</span> <span class="title">can_id_t</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> uint32_tWord; <span class="comment">// 29位/32位完整的CAN ID字</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">    &#123;</span></span><br><span class="line">        <span class="type">uint32_t</span> sa     :<span class="number">8</span>; <span class="comment">// 源地址 (Source Address)</span></span><br><span class="line">        <span class="type">uint32_t</span> ps     :<span class="number">8</span>; <span class="comment">// 目标地址 / PDU特定格式 (Destination Address / PDU Specific)</span></span><br><span class="line">        <span class="type">uint32_t</span> pf     :<span class="number">8</span>; <span class="comment">// PDU格式 (PDU Format)</span></span><br><span class="line">        <span class="type">uint32_t</span> dp     :<span class="number">1</span>; <span class="comment">// 数据页 (Data Page)</span></span><br><span class="line">        <span class="type">uint32_t</span> edp    :<span class="number">1</span>; <span class="comment">// 扩展数据页 (Extended Data Page)</span></span><br><span class="line">        <span class="type">uint32_t</span> p      :<span class="number">3</span>; <span class="comment">// 优先级 (Priority)</span></span><br><span class="line">        <span class="type">uint32_t</span> rsvd   :<span class="number">3</span>; <span class="comment">// 保留位 (Reserved)</span></span><br><span class="line">    &#125; bit;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">can_pdu</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">union</span> <span class="title">can_id_t</span> <span class="title">can_id</span>;</span>   <span class="comment">// CAN ID 联合体</span></span><br><span class="line">    <span class="type">uint8_t</span>        can_dlc;  <span class="comment">// 数据长度代码 (0 ~ 8)</span></span><br><span class="line">    <span class="type">uint8_t</span>        data[<span class="number">8</span>];  <span class="comment">// 报文数据负载 (最大8字节)</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-电压电流采样结构体-struct-OpenChaoJi-evcc-hal-samp"><a href="#1-2-电压电流采样结构体-struct-OpenChaoJi-evcc-hal-samp" class="headerlink" title="1.2 电压电流采样结构体 (struct OpenChaoJi_evcc_hal_samp)"></a>1.2 电压电流采样结构体 (<code>struct OpenChaoJi_evcc_hal_samp</code>)</h3><p>用于向协议栈上报充电回路的实时电压和电流测量值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">OpenChaoJi_evcc_hal_samp</span> &#123;</span></span><br><span class="line">    <span class="type">float</span> voltage_in;            <span class="comment">// 内侧电压（0.1V/位）</span></span><br><span class="line">    <span class="type">float</span> voltage_out;           <span class="comment">// 外侧电压（0.1V/位）</span></span><br><span class="line">    <span class="type">float</span> current;               <span class="comment">// 电流 （0.1A/位）</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-协议栈初始化与主任务流"><a href="#2-协议栈初始化与主任务流" class="headerlink" title="2. 协议栈初始化与主任务流"></a>2. 协议栈初始化与主任务流</h2><p>此部分定义了 EVCC 模块的生命周期，规定了系统如何初始化硬件和协议栈，以及如何在主任务循环中维持状态机运行。</p>
+<h3 id="2-1-初始化流程-evccAppInit"><a href="#2-1-初始化流程-evccAppInit" class="headerlink" title="2.1 初始化流程 (evccAppInit)"></a>2.1 初始化流程 (<code>evccAppInit</code>)</h3><p>在系统启动或进入充电管理前，必须调用初始化函数。标准初始化流程如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">evccAppInit</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1. 初始化OpenChaoJi协议栈内部操作系统层内存分配器</span></span><br><span class="line">    OpenChaoJi_os_memeory_init();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 初始化HAL层（移植者需在此初始化目标MCU的外设）</span></span><br><span class="line">    evcc_hal_one_init();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 3. 初始化APP应用层参数与状态变量</span></span><br><span class="line">    evcc_app_one_init(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 创建EVCC上下文句柄，作为后续各模块通信与调用的唯一凭证</span></span><br><span class="line">    s_evcc_context[<span class="number">0</span>] = OpenChaoJi_evcc_create_context((<span class="type">const</span> <span class="keyword">struct</span> OpenChaoJi_evcc_context_create_info * )&amp;s_evcc_create_info);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong><code>evcc_hal_one_init()</code> 移植说明</strong>：<br>移植者需在此函数中实现硬件底层初始化，包括初始化 MCU 的 CAN 控制器、GPIO 配置（继电器控制引脚、电子锁控制引脚等）、ADC 通道配置、定时器，并使能相关中断。</li>
+</ul>
+<h3 id="2-2-任务轮询与服务执行-evccAppTask"><a href="#2-2-任务轮询与服务执行-evccAppTask" class="headerlink" title="2.2 任务轮询与服务执行 (evccAppTask)"></a>2.2 任务轮询与服务执行 (<code>evccAppTask</code>)</h3><p>该任务函数需放入系统的周期性任务、线程（Thread）或主循环中轮询执行。轮询周期通常推荐为 <strong>10ms ~ 50ms</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">evccAppTask</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1. 检测是否触发了启动条件（例如：充电枪插入且有启动充电信号）</span></span><br><span class="line">    <span class="keyword">if</span> (evcc_app_one_check_start(s_evcc_context[<span class="number">0</span>]))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 调用GB/T 27930系统的启动回调，传入应用层参数以配置限值</span></span><br><span class="line">        s_evcc_context[<span class="number">0</span>]-&gt;active_evcc_gbt27930_system-&gt;app_start_func(s_evcc_context[<span class="number">0</span>], &amp;s_evcc_app_parameter[<span class="number">0</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 检测是否触发了停止条件（例如：用户手动停止、BMS主动终止、异常保护触发等）</span></span><br><span class="line">    <span class="keyword">if</span> (evcc_app_one_check_stop(s_evcc_context[<span class="number">0</span>]))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 调用GB/T 27930系统的停止回调，关闭输出并释放状态</span></span><br><span class="line">        s_evcc_context[<span class="number">0</span>]-&gt;active_evcc_gbt27930_system-&gt;app_stop_func(s_evcc_context[<span class="number">0</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 调用应用层接口，更新车辆当前的实时运行状态（如SOC、单体最高电压、报警状态等）</span></span><br><span class="line">    s_evcc_context[<span class="number">0</span>]-&gt;active_evcc_gbt27930_system-&gt;app_get_status_func(s_evcc_context[<span class="number">0</span>], &amp;s_evcc_app_status[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 执行OpenChaoJi协议栈核心状态机服务（处理CAN收发时序、重发超时等）</span></span><br><span class="line">    OpenChaoJi_evcc_service(s_evcc_context[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-CAN-通信接口"><a href="#3-CAN-通信接口" class="headerlink" title="3. CAN 通信接口"></a>3. CAN 通信接口</h2><h3 id="3-1-OpenChaoJi-evcc-hal-information-recv-can-voluation"><a href="#3-1-OpenChaoJi-evcc-hal-information-recv-can-voluation" class="headerlink" title="3.1 OpenChaoJi_evcc_hal_information_recv_can_voluation"></a>3.1 <code>OpenChaoJi_evcc_hal_information_recv_can_voluation</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_information_recv_can_voluation(OpenChaoJi_hal_handle handle, struct can_pdu * can_recv_info)</code></li>
+<li><strong>功能描述</strong>：<br>从系统的接收缓冲区获取一帧已收到的 CAN 报文，并填充到协议栈中。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>handle</code>：HAL 实例句柄。</li>
+<li><code>can_recv_info</code>：指向 <code>struct can_pdu</code> 的指针。移植者需要将底层驱动接收到的数据完整地映射到该结构体中。</li>
+</ul>
+</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>1</code>：成功接收到一帧报文，并且数据有效。</li>
+<li><code>-1</code>：无新数据或接收失败。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>需要调用目标平台 CAN 控制器的接收函数。由于底层接收多采用中断或 FIFO 机制，建议通过此函数轮询接收队列。确保底层的 29 位扩展 ID 解析能够正确拆分并映射到 <code>can_id_t</code> 联合体的各个位域中。</li>
+</ul>
+<h3 id="3-2-OpenChaoJi-evcc-hal-information-send-can-voluation"><a href="#3-2-OpenChaoJi-evcc-hal-information-send-can-voluation" class="headerlink" title="3.2 OpenChaoJi_evcc_hal_information_send_can_voluation"></a>3.2 <code>OpenChaoJi_evcc_hal_information_send_can_voluation</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_information_send_can_voluation(OpenChaoJi_hal_handle handle, const struct can_pdu * can_send_info)</code></li>
+<li><strong>功能描述</strong>：<br>通过物理 CAN 发送一帧协议栈生成的报文。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>handle</code>：HAL 实例句柄。</li>
+<li><code>can_send_info</code>：指向待发送报文 <code>struct can_pdu</code> 结构体的常量指针。</li>
+</ul>
+</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>0</code>：发送成功。</li>
+<li>其他值：发送失败。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>需调用目标平台的 CAN 发送接口。发送时应提取 <code>can_send_info-&gt;can_id.uint32_tWord</code> 作为发送 ID（配置为扩展帧发送），并将 <code>can_dlc</code> 与 <code>data</code> 写入物理发送邮箱。</li>
+</ul>
+<hr>
+<h2 id="4-继电器与硬件开关控制接口"><a href="#4-继电器与硬件开关控制接口" class="headerlink" title="4. 继电器与硬件开关控制接口"></a>4. 继电器与硬件开关控制接口</h2><h3 id="4-1-OpenChaoJi-evcc-hal-gbt-close-dc-relay"><a href="#4-1-OpenChaoJi-evcc-hal-gbt-close-dc-relay" class="headerlink" title="4.1 OpenChaoJi_evcc_hal_gbt_close_dc_relay"></a>4.1 <code>OpenChaoJi_evcc_hal_gbt_close_dc_relay</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>void OpenChaoJi_evcc_hal_gbt_close_dc_relay(OpenChaoJi_hal_handle handle, unsigned char ctl)</code></li>
+<li><strong>功能描述</strong>：<br>控制车辆端直流正极和负极主接触器的闭合与断开。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>handle</code>：HAL 实例句柄。</li>
+<li><code>ctl</code>：控制命令，<code>0</code>-断开，<code>1</code>-闭合。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>移植者需要在此处实现高压接触器（C5&#x2F;C6 或对应的主正、主负继电器）驱动管脚的 GPIO 控制逻辑，或通过车载内网发送对应的闭合&#x2F;断开指令。</li>
+</ul>
+<h3 id="4-2-OpenChaoJi-evcc-hal-gbt-b-lock-B类系统专用"><a href="#4-2-OpenChaoJi-evcc-hal-gbt-b-lock-B类系统专用" class="headerlink" title="4.2 OpenChaoJi_evcc_hal_gbt_b_lock (B类系统专用)"></a>4.2 <code>OpenChaoJi_evcc_hal_gbt_b_lock</code> (B类系统专用)</h3><ul>
+<li><strong>接口原型</strong>：<br><code>void OpenChaoJi_evcc_hal_gbt_b_lock(OpenChaoJi_hal_handle handle, unsigned char ctl)</code></li>
+<li><strong>功能描述</strong>：<br>控制物理电子锁进行锁止或解锁操作。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>handle</code>：HAL 实例句柄。</li>
+<li><code>ctl</code>：<code>0</code>-解锁，<code>1</code>-锁止。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>需控制车辆充电座上电子锁的电机或电磁铁驱动电路。注意某些电子锁采用脉冲驱动，通常需要在该函数内产生特定宽度的控制脉冲，或触发底层的脉冲输出任务。</li>
+</ul>
+<h3 id="4-3-OpenChaoJi-evcc-hal-gbt-b-close-s2-B类系统专用"><a href="#4-3-OpenChaoJi-evcc-hal-gbt-b-close-s2-B类系统专用" class="headerlink" title="4.3 OpenChaoJi_evcc_hal_gbt_b_close_s2 (B类系统专用)"></a>4.3 <code>OpenChaoJi_evcc_hal_gbt_b_close_s2</code> (B类系统专用)</h3><ul>
+<li><strong>接口原型</strong>：<br><code>void OpenChaoJi_evcc_hal_gbt_b_close_s2(OpenChaoJi_hal_handle handle, unsigned char ctl)</code></li>
+<li><strong>功能描述</strong>：<br>控制辅助开关 S2 的通断状态。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>handle</code>：HAL 实例句柄。</li>
+<li><code>ctl</code>：<code>0</code>-断开，<code>1</code>-闭合。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>将此接口映射到控制辅助开关 S2 对应继电器或开关元件的控制引脚。</li>
+</ul>
+<h3 id="4-4-OpenChaoJi-evcc-hal-gbt-b-close-s2p-B类系统专用"><a href="#4-4-OpenChaoJi-evcc-hal-gbt-b-close-s2p-B类系统专用" class="headerlink" title="4.4 OpenChaoJi_evcc_hal_gbt_b_close_s2p (B类系统专用)"></a>4.4 <code>OpenChaoJi_evcc_hal_gbt_b_close_s2p</code> (B类系统专用)</h3><ul>
+<li><strong>接口原型</strong>：<br><code>void OpenChaoJi_evcc_hal_gbt_b_close_s2p(OpenChaoJi_hal_handle handle, unsigned char ctl)</code></li>
+<li><strong>功能描述</strong>：<br>控制辅助开关 S2p 的通断状态。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>handle</code>：HAL 实例句柄。</li>
+<li><code>ctl</code>：<code>0</code>-断开，<code>1</code>-闭合。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>映射到控制 S2p 相应开关回路的硬件驱动管脚。</li>
+</ul>
+<h3 id="4-5-OpenChaoJi-evcc-hal-gbt-b-close-sv-B类系统专用"><a href="#4-5-OpenChaoJi-evcc-hal-gbt-b-close-sv-B类系统专用" class="headerlink" title="4.5 OpenChaoJi_evcc_hal_gbt_b_close_sv (B类系统专用)"></a>4.5 <code>OpenChaoJi_evcc_hal_gbt_b_close_sv</code> (B类系统专用)</h3><ul>
+<li><strong>接口原型</strong>：<br><code>void OpenChaoJi_evcc_hal_gbt_b_close_sv(OpenChaoJi_hal_handle handle, unsigned char ctl)</code></li>
+<li><strong>功能描述</strong>：<br>控制辅助电源开关 Sv 的通断状态。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>handle</code>：HAL 实例句柄。</li>
+<li><code>ctl</code>：<code>0</code>-断开，<code>1</code>-闭合。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>映射到控制低压供电或检测回路辅助开关 Sv 的硬件驱动管脚。</li>
+</ul>
+<hr>
+<h2 id="5-状态监测与硬件反馈接口"><a href="#5-状态监测与硬件反馈接口" class="headerlink" title="5. 状态监测与硬件反馈接口"></a>5. 状态监测与硬件反馈接口</h2><h3 id="5-1-OpenChaoJi-evcc-hal-get-status-dc-relay"><a href="#5-1-OpenChaoJi-evcc-hal-get-status-dc-relay" class="headerlink" title="5.1 OpenChaoJi_evcc_hal_get_status_dc_relay"></a>5.1 <code>OpenChaoJi_evcc_hal_get_status_dc_relay</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned char OpenChaoJi_evcc_hal_get_status_dc_relay(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取直流正负主接触器的实际闭合&#x2F;断开反馈状态。</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>0</code>：正、负极均断开。</li>
+<li><code>1</code>：负极闭合，正极断开。</li>
+<li><code>2</code>：正极闭合，负极断开。</li>
+<li><code>3</code>：正、负极均闭合。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>需配置并读取检测继电器辅助触点（如反馈引脚）的 GPIO 输入电平，然后将其转换为对应的返回值格式。</li>
+</ul>
+<h3 id="5-2-OpenChaoJi-evcc-hal-gbt-b-is-locked-B类系统专用"><a href="#5-2-OpenChaoJi-evcc-hal-gbt-b-is-locked-B类系统专用" class="headerlink" title="5.2 OpenChaoJi_evcc_hal_gbt_b_is_locked (B类系统专用)"></a>5.2 <code>OpenChaoJi_evcc_hal_gbt_b_is_locked</code> (B类系统专用)</h3><ul>
+<li><strong>接口原型</strong>：<br><code>bool OpenChaoJi_evcc_hal_gbt_b_is_locked(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取物理电子锁当前的锁止状态。</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>true</code>：已锁定。</li>
+<li><code>false</code>：未锁定。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>需配置并读取电子锁内部微动开关反馈引脚的 GPIO 状态。</li>
+</ul>
+<h3 id="5-3-OpenChaoJi-evcc-hal-gbt-b-is-closed-s2-B类系统专用"><a href="#5-3-OpenChaoJi-evcc-hal-gbt-b-is-closed-s2-B类系统专用" class="headerlink" title="5.3 OpenChaoJi_evcc_hal_gbt_b_is_closed_s2 (B类系统专用)"></a>5.3 <code>OpenChaoJi_evcc_hal_gbt_b_is_closed_s2</code> (B类系统专用)</h3><ul>
+<li><strong>接口原型</strong>：<br><code>bool OpenChaoJi_evcc_hal_gbt_b_is_closed_s2(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取辅助开关 S2 的实际闭合或断开状态反馈。</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>true</code>：闭合。</li>
+<li><code>false</code>：断开。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-4-OpenChaoJi-evcc-hal-gbt-b-is-closed-s2p-B类系统专用"><a href="#5-4-OpenChaoJi-evcc-hal-gbt-b-is-closed-s2p-B类系统专用" class="headerlink" title="5.4 OpenChaoJi_evcc_hal_gbt_b_is_closed_s2p (B类系统专用)"></a>5.4 <code>OpenChaoJi_evcc_hal_gbt_b_is_closed_s2p</code> (B类系统专用)</h3><ul>
+<li><strong>接口原型</strong>：<br><code>bool OpenChaoJi_evcc_hal_gbt_b_is_closed_s2p(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取辅助开关 S2p 的实际状态反馈。</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>true</code>：闭合。</li>
+<li><code>false</code>：断开。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-5-OpenChaoJi-evcc-hal-gbt-b-is-closed-sv-B类系统专用"><a href="#5-5-OpenChaoJi-evcc-hal-gbt-b-is-closed-sv-B类系统专用" class="headerlink" title="5.5 OpenChaoJi_evcc_hal_gbt_b_is_closed_sv (B类系统专用)"></a>5.5 <code>OpenChaoJi_evcc_hal_gbt_b_is_closed_sv</code> (B类系统专用)</h3><ul>
+<li><strong>接口原型</strong>：<br><code>bool OpenChaoJi_evcc_hal_gbt_b_is_closed_sv(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取辅助电源开关 Sv 的实际状态反馈。</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>true</code>：闭合。</li>
+<li><code>false</code>：断开。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-6-OpenChaoJi-evcc-hal-gbt-get-vol-checkpoint-2"><a href="#5-6-OpenChaoJi-evcc-hal-gbt-get-vol-checkpoint-2" class="headerlink" title="5.6 OpenChaoJi_evcc_hal_gbt_get_vol_checkpoint_2"></a>5.6 <code>OpenChaoJi_evcc_hal_gbt_get_vol_checkpoint_2</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_gbt_get_vol_checkpoint_2(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取检测点 2（CC2）处的物理测量电压值，用于确定充电枪的物理连接深度。</li>
+<li><strong>返回值</strong>：<ul>
+<li>检测点 2 的电压值，<strong>单位为 0.01V</strong>（例如：6.00V 需返回 600）。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>需配置 MCU 的 ADC 输入通道采集检测点 2 电路的分压值，经硬件校准及线性换算后，以 0.01V&#x2F;位的格式输出。</li>
+</ul>
+<h3 id="5-7-OpenChaoJi-evcc-hal-gbt-b-get-vol-checkpoint-3-B类系统专用"><a href="#5-7-OpenChaoJi-evcc-hal-gbt-b-get-vol-checkpoint-3-B类系统专用" class="headerlink" title="5.7 OpenChaoJi_evcc_hal_gbt_b_get_vol_checkpoint_3 (B类系统专用)"></a>5.7 <code>OpenChaoJi_evcc_hal_gbt_b_get_vol_checkpoint_3</code> (B类系统专用)</h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_gbt_b_get_vol_checkpoint_3(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取检测点 3 的物理测量电压值。</li>
+<li><strong>返回值</strong>：<ul>
+<li>检测点 3 的电压值，<strong>单位为 0.01V</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-8-OpenChaoJi-evcc-hal-is-emergency-pushed"><a href="#5-8-OpenChaoJi-evcc-hal-is-emergency-pushed" class="headerlink" title="5.8 OpenChaoJi_evcc_hal_is_emergency_pushed"></a>5.8 <code>OpenChaoJi_evcc_hal_is_emergency_pushed</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>bool OpenChaoJi_evcc_hal_is_emergency_pushed(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取系统急停按钮的实时状态，用于安全停止。</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>true</code>：急停被触发。</li>
+<li><code>false</code>：急停正常。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>映射至系统中连接急停按键的 GPIO 输入引脚。</li>
+</ul>
+<h3 id="5-9-OpenChaoJi-evcc-hal-gbt-a-is-secc-aux-connected-A类系统专用"><a href="#5-9-OpenChaoJi-evcc-hal-gbt-a-is-secc-aux-connected-A类系统专用" class="headerlink" title="5.9 OpenChaoJi_evcc_hal_gbt_a_is_secc_aux_connected (A类系统专用)"></a>5.9 <code>OpenChaoJi_evcc_hal_gbt_a_is_secc_aux_connected</code> (A类系统专用)</h3><ul>
+<li><strong>接口原型</strong>：<br><code>bool OpenChaoJi_evcc_hal_gbt_a_is_secc_aux_connected(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>检测辅助接口连接状态。</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>true</code>：已连接。</li>
+<li><code>false</code>：未连接。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="6-模拟量采样接口"><a href="#6-模拟量采样接口" class="headerlink" title="6. 模拟量采样接口"></a>6. 模拟量采样接口</h2><h3 id="6-1-OpenChaoJi-evcc-hal-sampling-value"><a href="#6-1-OpenChaoJi-evcc-hal-sampling-value" class="headerlink" title="6.1 OpenChaoJi_evcc_hal_sampling_value"></a>6.1 <code>OpenChaoJi_evcc_hal_sampling_value</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_sampling_value(OpenChaoJi_hal_handle handle, struct OpenChaoJi_evcc_hal_samp *samp_value)</code></li>
+<li><strong>功能描述</strong>：<br>一次性获取充电主回路的三个核心采样参数：输入电压、输出电压和电流。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>handle</code>：HAL 实例句柄。</li>
+<li><code>samp_value</code>：指向目标采样结构体 <code>struct OpenChaoJi_evcc_hal_samp</code> 的指针。移植者需要分别填充其 <code>voltage_in</code>、<code>voltage_out</code> 和 <code>current</code> 成员。</li>
+</ul>
+</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>0</code>：采样读取成功。</li>
+<li><code>-1</code>：采样失败。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>此接口直接提供闭环控制所需的物理数值。移植者需要读取高压采集电路（如高压分压采样、数字传感器输入等）的值并存入结构体：<ul>
+<li><code>voltage_in</code> 对应电池包内部端电压。</li>
+<li><code>voltage_out</code> 对应车辆充电插口外侧电压。</li>
+<li><code>current</code> 对应当前的实际充电电流。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="7-车辆与电池信息提供接口-BMS-映射"><a href="#7-车辆与电池信息提供接口-BMS-映射" class="headerlink" title="7. 车辆与电池信息提供接口 (BMS 映射)"></a>7. 车辆与电池信息提供接口 (BMS 映射)</h2><p>本节中的接口提供整车在物理运行中的重要参数与安全界限。这些接口的返回值会被协议栈封装到特定的 GB&#x2F;T 27930 报文中传送至充电机侧。</p>
+<h3 id="7-1-OpenChaoJi-evcc-hal-get-imd-request-voltage"><a href="#7-1-OpenChaoJi-evcc-hal-get-imd-request-voltage" class="headerlink" title="7.1 OpenChaoJi_evcc_hal_get_imd_request_voltage"></a>7.1 <code>OpenChaoJi_evcc_hal_get_imd_request_voltage</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_imd_request_voltage(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取车辆端允许绝缘监测的总电压限值。</li>
+<li><strong>返回值</strong>：<ul>
+<li>电压值，<strong>单位：0.1V&#x2F;位</strong>，无偏移。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-2-OpenChaoJi-evcc-hal-get-batt-type"><a href="#7-2-OpenChaoJi-evcc-hal-get-batt-type" class="headerlink" title="7.2 OpenChaoJi_evcc_hal_get_batt_type"></a>7.2 <code>OpenChaoJi_evcc_hal_get_batt_type</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned char OpenChaoJi_evcc_hal_get_batt_type(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取动力蓄电池的化学类型编码。</li>
+<li><strong>返回值</strong>：<ul>
+<li>电池化学类型编码，范围定义：<code>01H</code>-铅酸，<code>02H</code>-镍氢，<code>03H</code>-磷酸铁锂，<code>04H</code>-锰酸锂，<code>05H</code>-钴酸锂，<code>06H</code>-三元材料，<code>07H</code>-聚合物锂离子，<code>08H</code>-钛酸锂，<code>FFH</code>-其他电池。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-3-OpenChaoJi-evcc-hal-get-rated-capacity"><a href="#7-3-OpenChaoJi-evcc-hal-get-rated-capacity" class="headerlink" title="7.3 OpenChaoJi_evcc_hal_get_rated_capacity"></a>7.3 <code>OpenChaoJi_evcc_hal_get_rated_capacity</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_rated_capacity(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取动力电池额定容量值。</li>
+<li><strong>返回值</strong>：<ul>
+<li>额定容量，<strong>单位：0.1Ah&#x2F;位</strong>，无偏移。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-4-OpenChaoJi-evcc-hal-get-rated-voltage"><a href="#7-4-OpenChaoJi-evcc-hal-get-rated-voltage" class="headerlink" title="7.4 OpenChaoJi_evcc_hal_get_rated_voltage"></a>7.4 <code>OpenChaoJi_evcc_hal_get_rated_voltage</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_rated_voltage(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取动力蓄电池额定总电压。</li>
+<li><strong>返回值</strong>：<ul>
+<li>额定总电压，<strong>单位：0.1V&#x2F;位</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-5-OpenChaoJi-evcc-hal-get-batt-factory"><a href="#7-5-OpenChaoJi-evcc-hal-get-batt-factory" class="headerlink" title="7.5 OpenChaoJi_evcc_hal_get_batt_factory"></a>7.5 <code>OpenChaoJi_evcc_hal_get_batt_factory</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>void OpenChaoJi_evcc_hal_get_batt_factory(OpenChaoJi_hal_handle handle, unsigned char *batt_factory)</code></li>
+<li><strong>功能描述</strong>：<br>获取电池生产厂商信息。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>batt_factory</code>：用于存储厂商名称的 4 字节缓冲区。填充内容应为标准 ASCII 码形式，低字节在前。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-6-OpenChaoJi-evcc-hal-get-batt-sn"><a href="#7-6-OpenChaoJi-evcc-hal-get-batt-sn" class="headerlink" title="7.6 OpenChaoJi_evcc_hal_get_batt_sn"></a>7.6 <code>OpenChaoJi_evcc_hal_get_batt_sn</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>void OpenChaoJi_evcc_hal_get_batt_sn(OpenChaoJi_hal_handle handle, unsigned char *batt_sn)</code></li>
+<li><strong>功能描述</strong>：<br>获取动力电池组出厂序列号。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>batt_sn</code>：用于存储序列号的 4 字节缓冲区。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-7-OpenChaoJi-evcc-hal-get-batt-date"><a href="#7-7-OpenChaoJi-evcc-hal-get-batt-date" class="headerlink" title="7.7 OpenChaoJi_evcc_hal_get_batt_date"></a>7.7 <code>OpenChaoJi_evcc_hal_get_batt_date</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>struct OpenChaoJi_evcc_hal_batt_date OpenChaoJi_evcc_hal_get_batt_date(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取动力电池组的生产日期。</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>OpenChaoJi_evcc_hal_batt_date</code> 格式的时间日期结构体。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-8-OpenChaoJi-evcc-hal-get-charge-cycles"><a href="#7-8-OpenChaoJi-evcc-hal-get-charge-cycles" class="headerlink" title="7.8 OpenChaoJi_evcc_hal_get_charge_cycles"></a>7.8 <code>OpenChaoJi_evcc_hal_get_charge_cycles</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_charge_cycles(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取电池的历史累计循环充电次数。</li>
+<li><strong>返回值</strong>：<ul>
+<li>累计循环次数，<strong>单位：1次&#x2F;位</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-9-OpenChaoJi-evcc-hal-get-batt-property"><a href="#7-9-OpenChaoJi-evcc-hal-get-batt-property" class="headerlink" title="7.9 OpenChaoJi_evcc_hal_get_batt_property"></a>7.9 <code>OpenChaoJi_evcc_hal_get_batt_property</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned char OpenChaoJi_evcc_hal_get_batt_property(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取动力电池系统产权性质标识。</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>0</code>：租赁电池。</li>
+<li><code>1</code>：整车自有电池。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-10-OpenChaoJi-evcc-hal-get-evin"><a href="#7-10-OpenChaoJi-evcc-hal-get-evin" class="headerlink" title="7.10 OpenChaoJi_evcc_hal_get_evin"></a>7.10 <code>OpenChaoJi_evcc_hal_get_evin</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>void OpenChaoJi_evcc_hal_get_evin(OpenChaoJi_hal_handle handle, unsigned char *evin)</code></li>
+<li><strong>功能描述</strong>：<br>获取车辆扩展识别码。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>evin</code>：需被填充的 17 字节缓冲区，格式为扩展 ASCII 码，低字节在前。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-11-OpenChaoJi-evcc-hal-get-allow-cellvolt"><a href="#7-11-OpenChaoJi-evcc-hal-get-allow-cellvolt" class="headerlink" title="7.11 OpenChaoJi_evcc_hal_get_allow_cellvolt"></a>7.11 <code>OpenChaoJi_evcc_hal_get_allow_cellvolt</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_allow_cellvolt(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取单体电芯安全允许的极限充电电压。</li>
+<li><strong>返回值</strong>：<ul>
+<li>允许极限电压，<strong>单位：0.01V&#x2F;位</strong>（限制范围 0 ~ 24V）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-12-OpenChaoJi-evcc-hal-get-allow-voltage"><a href="#7-12-OpenChaoJi-evcc-hal-get-allow-voltage" class="headerlink" title="7.12 OpenChaoJi_evcc_hal_get_allow_voltage"></a>7.12 <code>OpenChaoJi_evcc_hal_get_allow_voltage</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_allow_voltage(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取整包动力电池允许的最大充电总电压安全极限。</li>
+<li><strong>返回值</strong>：<ul>
+<li>允许总电压，<strong>单位：0.1V&#x2F;位</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-13-OpenChaoJi-evcc-hal-get-allow-current"><a href="#7-13-OpenChaoJi-evcc-hal-get-allow-current" class="headerlink" title="7.13 OpenChaoJi_evcc_hal_get_allow_current"></a>7.13 <code>OpenChaoJi_evcc_hal_get_allow_current</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_allow_current(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取当前状态下电池最大允许输入的充电电流。</li>
+<li><strong>返回值</strong>：<ul>
+<li>允许的最大电流，<strong>单位：0.1A&#x2F;位</strong>（限制范围 0 ~ 400A）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-14-OpenChaoJi-evcc-hal-get-rated-energy"><a href="#7-14-OpenChaoJi-evcc-hal-get-rated-energy" class="headerlink" title="7.14 OpenChaoJi_evcc_hal_get_rated_energy"></a>7.14 <code>OpenChaoJi_evcc_hal_get_rated_energy</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_rated_energy(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取动力电池的总装载标称能量。</li>
+<li><strong>返回值</strong>：<ul>
+<li>电池总能量，<strong>单位：0.1kWh&#x2F;位</strong>（范围 0 ~ 1000kWh）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-15-OpenChaoJi-evcc-hal-get-allow-tempera"><a href="#7-15-OpenChaoJi-evcc-hal-get-allow-tempera" class="headerlink" title="7.15 OpenChaoJi_evcc_hal_get_allow_tempera"></a>7.15 <code>OpenChaoJi_evcc_hal_get_allow_tempera</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_get_allow_tempera(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取动力电池电芯允许工作的最高充电温度极限。</li>
+<li><strong>返回值</strong>：<ul>
+<li>最高允许工作温度值，<strong>单位：1℃&#x2F;位</strong>（物理范围 -50℃ ~ 200℃）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-16-OpenChaoJi-evcc-hal-get-batt-soc"><a href="#7-16-OpenChaoJi-evcc-hal-get-batt-soc" class="headerlink" title="7.16 OpenChaoJi_evcc_hal_get_batt_soc"></a>7.16 <code>OpenChaoJi_evcc_hal_get_batt_soc</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_batt_soc(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取整车的实时荷电状态（SOC）百分比。</li>
+<li><strong>返回值</strong>：<ul>
+<li>当前实时 SOC 值，<strong>单位：0.1%&#x2F;位</strong>（范围：0 ~ 1000 代表 0.0% ~ 100.0%）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-17-OpenChaoJi-evcc-hal-get-measured-voltage"><a href="#7-17-OpenChaoJi-evcc-hal-get-measured-voltage" class="headerlink" title="7.17 OpenChaoJi_evcc_hal_get_measured_voltage"></a>7.17 <code>OpenChaoJi_evcc_hal_get_measured_voltage</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_measured_voltage(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取车辆充电接口处采集到的高压测量电压。</li>
+<li><strong>返回值</strong>：<ul>
+<li>实测高压值，<strong>单位：0.1V&#x2F;位</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-18-OpenChaoJi-evcc-hal-get-measured-current"><a href="#7-18-OpenChaoJi-evcc-hal-get-measured-current" class="headerlink" title="7.18 OpenChaoJi_evcc_hal_get_measured_current"></a>7.18 <code>OpenChaoJi_evcc_hal_get_measured_current</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_measured_current(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取充电回路中采集到的实时电流测量值。</li>
+<li><strong>返回值</strong>：<ul>
+<li>实测电流值，<strong>单位：0.1A&#x2F;位</strong>（范围 0 ~ 400A）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-19-OpenChaoJi-evcc-hal-get-expected-time"><a href="#7-19-OpenChaoJi-evcc-hal-get-expected-time" class="headerlink" title="7.19 OpenChaoJi_evcc_hal_get_expected_time"></a>7.19 <code>OpenChaoJi_evcc_hal_get_expected_time</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_expected_time(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取车辆动力系统评估出的预计剩余充电时间。</li>
+<li><strong>返回值</strong>：<ul>
+<li>剩余充电时间，<strong>单位：1min&#x2F;位</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-20-OpenChaoJi-evcc-hal-get-max-cellvolt"><a href="#7-20-OpenChaoJi-evcc-hal-get-max-cellvolt" class="headerlink" title="7.20 OpenChaoJi_evcc_hal_get_max_cellvolt"></a>7.20 <code>OpenChaoJi_evcc_hal_get_max_cellvolt</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>struct OpenChaoJi_evcc_hal_batt_cellvolt OpenChaoJi_evcc_hal_get_max_cellvolt(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取整包中电压最高的那一串电池单体的实时电压以及该检测点（通道）的 ID。</li>
+<li><strong>返回值</strong>：<ul>
+<li>包含单体最大电压 <code>voltage</code>（<strong>单位：0.01V</strong>）及通道 <code>id</code> 的结构体。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-21-OpenChaoJi-evcc-hal-get-min-cellvolt"><a href="#7-21-OpenChaoJi-evcc-hal-get-min-cellvolt" class="headerlink" title="7.21 OpenChaoJi_evcc_hal_get_min_cellvolt"></a>7.21 <code>OpenChaoJi_evcc_hal_get_min_cellvolt</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>struct OpenChaoJi_evcc_hal_batt_cellvolt OpenChaoJi_evcc_hal_get_min_cellvolt(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取电压最低的那一串电池单体的电压以及该检测点（通道）的 ID。</li>
+<li><strong>返回值</strong>：<ul>
+<li>包含单体最小电压 <code>voltage</code>（<strong>单位：0.01V</strong>）及通道 <code>id</code> 的结构体。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-22-OpenChaoJi-evcc-hal-get-max-tempera"><a href="#7-22-OpenChaoJi-evcc-hal-get-max-tempera" class="headerlink" title="7.22 OpenChaoJi_evcc_hal_get_max_tempera"></a>7.22 <code>OpenChaoJi_evcc_hal_get_max_tempera</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>struct OpenChaoJi_evcc_hal_batt_tempera OpenChaoJi_evcc_hal_get_max_tempera(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取整包中的最高温度值及对应的传感器通道 ID。</li>
+<li><strong>返回值</strong>：<ul>
+<li>包含最高温度值 <code>tempera</code>（<strong>单位：1℃</strong>，带有 -50℃ 的偏移量）及通道 <code>id</code> 的结构体。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-23-OpenChaoJi-evcc-hal-get-min-tempera"><a href="#7-23-OpenChaoJi-evcc-hal-get-min-tempera" class="headerlink" title="7.23 OpenChaoJi_evcc_hal_get_min_tempera"></a>7.23 <code>OpenChaoJi_evcc_hal_get_min_tempera</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>struct OpenChaoJi_evcc_hal_batt_tempera OpenChaoJi_evcc_hal_get_min_tempera(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取整包中的最低温度值及对应的传感器通道 ID。</li>
+<li><strong>返回值</strong>：<ul>
+<li>包含最低温度值 <code>tempera</code>（<strong>单位：1℃</strong>，带有 -50℃ 的偏移量）及通道 <code>id</code> 的结构体。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-24-OpenChaoJi-evcc-hal-get-batt-state"><a href="#7-24-OpenChaoJi-evcc-hal-get-batt-state" class="headerlink" title="7.24 OpenChaoJi_evcc_hal_get_batt_state"></a>7.24 <code>OpenChaoJi_evcc_hal_get_batt_state</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>union OpenChaoJi_evcc_hal_batt_state OpenChaoJi_evcc_hal_get_batt_state(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取动力电池当前的整体健康及工作状态（警告与错误信息），以填充 GB&#x2F;T 27930 报文位。</li>
+<li><strong>返回值</strong>：<ul>
+<li>动力电池状态位掩码联合体 <code>OpenChaoJi_evcc_hal_batt_state</code>。包含：<ul>
+<li><code>warn_cellvolt</code>: 单体电压异常警告</li>
+<li><code>warn_current</code>: 充电过流异常警告</li>
+<li><code>warn_tempera</code>: 温度过高异常警告</li>
+<li><code>charge_enable</code>: 充电允许指示（非故障状态允许输出充电）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-25-OpenChaoJi-evcc-hal-get-cellvolt-num"><a href="#7-25-OpenChaoJi-evcc-hal-get-cellvolt-num" class="headerlink" title="7.25 OpenChaoJi_evcc_hal_get_cellvolt_num"></a>7.25 <code>OpenChaoJi_evcc_hal_get_cellvolt_num</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_cellvolt_num(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取电池单体电压检测回路的测点总量。</li>
+<li><strong>返回值</strong>：<ul>
+<li>检测点个数（有效范围：1 ~ 256）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-26-OpenChaoJi-evcc-hal-get-tempera-num"><a href="#7-26-OpenChaoJi-evcc-hal-get-tempera-num" class="headerlink" title="7.26 OpenChaoJi_evcc_hal_get_tempera_num"></a>7.26 <code>OpenChaoJi_evcc_hal_get_tempera_num</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>unsigned int OpenChaoJi_evcc_hal_get_tempera_num(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取电池温度测点的总量。</li>
+<li><strong>返回值</strong>：<ul>
+<li>温度传感器个数（有效范围：1 ~ 128）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-27-OpenChaoJi-evcc-hal-get-cellvolt"><a href="#7-27-OpenChaoJi-evcc-hal-get-cellvolt" class="headerlink" title="7.27 OpenChaoJi_evcc_hal_get_cellvolt"></a>7.27 <code>OpenChaoJi_evcc_hal_get_cellvolt</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>void OpenChaoJi_evcc_hal_get_cellvolt(OpenChaoJi_hal_handle handle, unsigned char *group, unsigned int *cellvolt)</code></li>
+<li><strong>功能描述</strong>：<br>批量获取特定分组下的单体电压数值。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>group</code>：单体电压组号，通常对应于当前被请求的组别。</li>
+<li><code>cellvolt</code>：指向被填充单体电压缓冲区的指针，输出值<strong>单位：0.01V&#x2F;位</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-28-OpenChaoJi-evcc-hal-get-tempera"><a href="#7-28-OpenChaoJi-evcc-hal-get-tempera" class="headerlink" title="7.28 OpenChaoJi_evcc_hal_get_tempera"></a>7.28 <code>OpenChaoJi_evcc_hal_get_tempera</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>void OpenChaoJi_evcc_hal_get_tempera(OpenChaoJi_hal_handle handle, int *tempera)</code></li>
+<li><strong>功能描述</strong>：<br>批量获取所有温度检测通道的实时物理温度。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>tempera</code>：指向存放温度数据整型数组的指针，每个成员<strong>单位：1℃&#x2F;位</strong>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="8-电池系统准备工作接口"><a href="#8-电池系统准备工作接口" class="headerlink" title="8. 电池系统准备工作接口"></a>8. 电池系统准备工作接口</h2><h3 id="8-1-OpenChaoJi-evcc-hal-battery-prepare"><a href="#8-1-OpenChaoJi-evcc-hal-battery-prepare" class="headerlink" title="8.1 OpenChaoJi_evcc_hal_battery_prepare"></a>8.1 <code>OpenChaoJi_evcc_hal_battery_prepare</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>void OpenChaoJi_evcc_hal_battery_prepare(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>触发车辆电池充电预就绪程序。</li>
+<li><strong>移植说明</strong>：<br>若目标平台需要，可在此接口执行电池热管理激活、发送 BMS 上电配置等动作。</li>
+</ul>
+<h3 id="8-2-OpenChaoJi-evcc-hal-battery-is-ready"><a href="#8-2-OpenChaoJi-evcc-hal-battery-is-ready" class="headerlink" title="8.2 OpenChaoJi_evcc_hal_battery_is_ready"></a>8.2 <code>OpenChaoJi_evcc_hal_battery_is_ready</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>bool OpenChaoJi_evcc_hal_battery_is_ready(OpenChaoJi_hal_handle handle)</code></li>
+<li><strong>功能描述</strong>：<br>查询车辆动力电池当前是否已完全实现充电就绪。</li>
+<li><strong>返回值</strong>：<ul>
+<li><code>true</code>：可以开始接受大电流充电。</li>
+<li><code>false</code>：系统处于准备阶段中。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="9-自检与绝缘监测接口-IMD"><a href="#9-自检与绝缘监测接口-IMD" class="headerlink" title="9. 自检与绝缘监测接口 (IMD)"></a>9. 自检与绝缘监测接口 (IMD)</h2><p>本部分接口为绝缘检测与自检系统提供行为抽象。</p>
+<h3 id="9-1-OpenChaoJi-evcc-hal-selfcheck-request-start"><a href="#9-1-OpenChaoJi-evcc-hal-selfcheck-request-start" class="headerlink" title="9.1 OpenChaoJi_evcc_hal_selfcheck_request_start"></a>9.1 <code>OpenChaoJi_evcc_hal_selfcheck_request_start</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_selfcheck_request_start(OpenChaoJi_hal_handle hal_handle, float voltage)</code></li>
+<li><strong>功能描述</strong>：<br>请求启动安全自检过程。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>voltage</code>：自检时的参考电压值（V）。</li>
+</ul>
+</li>
+<li><strong>返回值</strong>：<br><code>0</code>-成功，<code>-1</code>-失败。</li>
+</ul>
+<h3 id="9-2-OpenChaoJi-evcc-hal-selfcheck-request-stop"><a href="#9-2-OpenChaoJi-evcc-hal-selfcheck-request-stop" class="headerlink" title="9.2 OpenChaoJi_evcc_hal_selfcheck_request_stop"></a>9.2 <code>OpenChaoJi_evcc_hal_selfcheck_request_stop</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_selfcheck_request_stop(OpenChaoJi_hal_handle hal_handle)</code></li>
+<li><strong>功能描述</strong>：<br>请求终止自检程序。</li>
+<li><strong>返回值</strong>：<br><code>0</code>-成功，<code>-1</code>-失败。</li>
+</ul>
+<h3 id="9-3-OpenChaoJi-evcc-hal-selfcheck-get-result"><a href="#9-3-OpenChaoJi-evcc-hal-selfcheck-get-result" class="headerlink" title="9.3 OpenChaoJi_evcc_hal_selfcheck_get_result"></a>9.3 <code>OpenChaoJi_evcc_hal_selfcheck_get_result</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>struct OpenChaoJi_evcc_hal_selfdata OpenChaoJi_evcc_hal_selfcheck_get_result(OpenChaoJi_hal_handle hal_handle)</code></li>
+<li><strong>功能描述</strong>：<br>获取车辆端接触器自检（粘连、短路、绝缘等级）的最终状态和结果。</li>
+<li><strong>返回值</strong>：<br>返回 <code>OpenChaoJi_evcc_hal_selfdata</code> 结构体。</li>
+</ul>
+<h3 id="9-4-OpenChaoJi-evcc-hal-imd-request-start"><a href="#9-4-OpenChaoJi-evcc-hal-imd-request-start" class="headerlink" title="9.4 OpenChaoJi_evcc_hal_imd_request_start"></a>9.4 <code>OpenChaoJi_evcc_hal_imd_request_start</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_imd_request_start(OpenChaoJi_hal_handle hal_handle, float voltage)</code></li>
+<li><strong>功能描述</strong>：<br>开启充电环路绝缘检测传感器（IMD）。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>voltage</code>：当前的测试标称电压（V）。</li>
+</ul>
+</li>
+<li><strong>返回值</strong>：<br><code>0</code>-开启成功，<code>-1</code>-开启失败。</li>
+</ul>
+<h3 id="9-5-OpenChaoJi-evcc-hal-imd-request-stop"><a href="#9-5-OpenChaoJi-evcc-hal-imd-request-stop" class="headerlink" title="9.5 OpenChaoJi_evcc_hal_imd_request_stop"></a>9.5 <code>OpenChaoJi_evcc_hal_imd_request_stop</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_imd_request_stop(OpenChaoJi_hal_handle hal_handle)</code></li>
+<li><strong>功能描述</strong>：<br>停止绝缘监测仪的测量。</li>
+<li><strong>返回值</strong>：<br><code>0</code>-停止成功，<code>-1</code>-停止失败。</li>
+</ul>
+<h3 id="9-6-OpenChaoJi-evcc-hal-imd-get-result"><a href="#9-6-OpenChaoJi-evcc-hal-imd-get-result" class="headerlink" title="9.6 OpenChaoJi_evcc_hal_imd_get_result"></a>9.6 <code>OpenChaoJi_evcc_hal_imd_get_result</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_imd_get_result(OpenChaoJi_hal_handle hal_handle, float *rp_value, float *rn_value)</code></li>
+<li><strong>功能描述</strong>：<br>读取 IMD 模块的当前测量阻值。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>rp_value</code>：输出正对地绝缘电阻值存储地址，单位：kΩ。</li>
+<li><code>rn_value</code>：输出负对地绝缘电阻值存储地址，单位：kΩ。</li>
+</ul>
+</li>
+<li><strong>返回值</strong>：<br><code>-1</code>-设备错误，<code>0</code>-阻值有效可用，<code>1</code>-正在采样中。</li>
+</ul>
+<h3 id="9-7-OpenChaoJi-evcc-hal-vent-request-start"><a href="#9-7-OpenChaoJi-evcc-hal-vent-request-start" class="headerlink" title="9.7 OpenChaoJi_evcc_hal_vent_request_start"></a>9.7 <code>OpenChaoJi_evcc_hal_vent_request_start</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_vent_request_start(OpenChaoJi_hal_handle hal_handle)</code></li>
+<li><strong>功能描述</strong>：<br>闭合泄放控制电路，消耗残留的高压余电。</li>
+<li><strong>返回值</strong>：<br><code>0</code>-执行成功，<code>-1</code>-执行失败。</li>
+</ul>
+<h3 id="9-8-OpenChaoJi-evcc-hal-vent-request-stop"><a href="#9-8-OpenChaoJi-evcc-hal-vent-request-stop" class="headerlink" title="9.8 OpenChaoJi_evcc_hal_vent_request_stop"></a>9.8 <code>OpenChaoJi_evcc_hal_vent_request_stop</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_vent_request_stop(OpenChaoJi_hal_handle hal_handle)</code></li>
+<li><strong>功能描述</strong>：<br>停止高压电容电荷泄放。</li>
+<li><strong>返回值</strong>：<br><code>0</code>-执行成功，<code>-1</code>-执行失败。</li>
+</ul>
+<hr>
+<h2 id="10-系统及操作系统接口"><a href="#10-系统及操作系统接口" class="headerlink" title="10. 系统及操作系统接口"></a>10. 系统及操作系统接口</h2><h3 id="10-1-OpenChaoJi-evcc-hal-set-time"><a href="#10-1-OpenChaoJi-evcc-hal-set-time" class="headerlink" title="10.1 OpenChaoJi_evcc_hal_set_time"></a>10.1 <code>OpenChaoJi_evcc_hal_set_time</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_evcc_hal_set_time(OpenChaoJi_hal_handle handle, time_t time)</code></li>
+<li><strong>功能描述</strong>：<br>同步外部网络的基准时间源并校准系统 RTC。</li>
+<li><strong>参数说明</strong>：<ul>
+<li><code>time</code>：秒级标准 Unix 时间戳（<code>time_t</code> 类型）。</li>
+</ul>
+</li>
+<li><strong>返回值</strong>：<br><code>0</code>-更新成功，<code>-1</code>-更新失败。</li>
+</ul>
+<h3 id="10-2-OpenChaoJi-debug-get-log-level"><a href="#10-2-OpenChaoJi-debug-get-log-level" class="headerlink" title="10.2 OpenChaoJi_debug_get_log_level"></a>10.2 <code>OpenChaoJi_debug_get_log_level</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>int OpenChaoJi_debug_get_log_level()</code></li>
+<li><strong>功能描述</strong>：<br>获取系统当前指定的调试日志打印屏蔽。</li>
+<li><strong>返回值</strong>：<ul>
+<li>日志调试过滤位掩码。</li>
+</ul>
+</li>
+</ul>
+<h3 id="10-3-OpenChaoJi-os-get-ticks"><a href="#10-3-OpenChaoJi-os-get-ticks" class="headerlink" title="10.3 OpenChaoJi_os_get_ticks"></a>10.3 <code>OpenChaoJi_os_get_ticks</code></h3><ul>
+<li><strong>接口原型</strong>：<br><code>uint32_t OpenChaoJi_os_get_ticks()</code></li>
+<li><strong>功能描述</strong>：<br>获取系统当前运行的滴答数，必须以毫秒（ms）为最小计数单位递增。</li>
+<li><strong>返回值</strong>：<ul>
+<li>自启动以来的累计毫秒值（ms）。</li>
+</ul>
+</li>
+<li><strong>移植说明</strong>：<br>此计数用于协议栈内部各个状态和收发定时的超时逻辑判断。移植时请将其映射至 RTOS 系统滴答（如 FreeRTOS 的 <code>xTaskGetTickCount() * portTICK_PERIOD_MS</code>），或由高精度硬件定时器递增。</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Dim_峰</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/p/7b3e6a114cec4084b5a95d96c7be44cc/">http://example.com/p/7b3e6a114cec4084b5a95d96c7be44cc/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">Diminuend</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/OpenChaoJi/">OpenChaoJi</a><a class="post-meta__tags" href="/tags/%E5%9B%BD%E6%A0%87%E7%9B%B4%E6%B5%81%E5%85%85%E7%94%B5/">国标直流充电</a><a class="post-meta__tags" href="/tags/GBT27930/">GBT27930</a></div><div class="post-share"><div class="social-share" data-image="/resources/avatar..jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/resources/wechatPlay.jpg" target="_blank"><img class="post-qr-code-img" src="/resources/wechatPlay.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/resources/aliplay.jpg" target="_blank"><img class="post-qr-code-img" src="/resources/aliplay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/p/eb3d587aca4948e4b101dcc2f4d490ee/" title="Proxmox AIO 实践：LXC 环境下 Docker 版 Syncthing 与 Samba 共享方案"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Proxmox AIO 实践：LXC 环境下 Docker 版 Syncthing 与 Samba 共享方案</div></div><div class="info-2"><div class="info-item-1">0. 背景与架构在 AIO（All-In-One）主机中，我们需要一个 7x24 小时运行的同步服务（Syncthing），并将同步的数据实时共享给 Windows 虚拟机或物理机使用。 技术栈：  宿主机： Proxmox VE (PVE) 容器： LXC (运行 Docker) 服务： Docker 版 Syncthing + 原生 Samba 客户端： Windows 10&#x2F;11 (通过 SMB 挂载)  逻辑架构：PVE 虚拟硬盘 -&gt; LXC 挂载点 (/mnt/storage) -&gt; Docker (Syncthing 映射) &amp; Samba (共享给 Windows)  1. 准备阶段：PVE 分配虚拟硬盘在 PVE 界面中，为运行 Docker 的 LXC 容器添加一块独立的虚拟硬盘。  登录 PVE 管理界面，选择 LXC 容器（如 ID: 101）。 进入 Resources (资源) -&gt; Add (添加) -&gt; Mount Point (挂载点)。 配置： Storage: 选择存储池（如 local-lvm）。 ...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/resources/avatar..jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Dim_峰</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">14</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Diminuend"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/Diminuend" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:937328303@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">为梦想而努力！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#OpenChaoJi-EVCC-HAL-%E7%A7%BB%E6%A4%8D%E3%80%81%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E6%8E%A5%E5%8F%A3%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3"><span class="toc-number">1.</span> <span class="toc-text">OpenChaoJi EVCC HAL 移植、初始化与接口说明文档</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%A0%B8%E5%BF%83%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%9A%E4%B9%89"><span class="toc-number">1.1.</span> <span class="toc-text">1. 核心数据结构定义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-CAN-%E6%A0%87%E8%AF%86%E7%AC%A6%E4%B8%8E%E6%8A%A5%E6%96%87%E5%AE%9A%E4%B9%89-union-can-id-t-struct-can-pdu"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1 CAN 标识符与报文定义 (union can_id_t &amp; struct can_pdu)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E7%94%B5%E5%8E%8B%E7%94%B5%E6%B5%81%E9%87%87%E6%A0%B7%E7%BB%93%E6%9E%84%E4%BD%93-struct-OpenChaoJi-evcc-hal-samp"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2 电压电流采样结构体 (struct OpenChaoJi_evcc_hal_samp)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%8D%8F%E8%AE%AE%E6%A0%88%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E4%B8%BB%E4%BB%BB%E5%8A%A1%E6%B5%81"><span class="toc-number">1.2.</span> <span class="toc-text">2. 协议栈初始化与主任务流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%88%9D%E5%A7%8B%E5%8C%96%E6%B5%81%E7%A8%8B-evccAppInit"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 初始化流程 (evccAppInit)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E4%BB%BB%E5%8A%A1%E8%BD%AE%E8%AF%A2%E4%B8%8E%E6%9C%8D%E5%8A%A1%E6%89%A7%E8%A1%8C-evccAppTask"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 任务轮询与服务执行 (evccAppTask)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-CAN-%E9%80%9A%E4%BF%A1%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.3.</span> <span class="toc-text">3. CAN 通信接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-OpenChaoJi-evcc-hal-information-recv-can-voluation"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 OpenChaoJi_evcc_hal_information_recv_can_voluation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-OpenChaoJi-evcc-hal-information-send-can-voluation"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 OpenChaoJi_evcc_hal_information_send_can_voluation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E7%BB%A7%E7%94%B5%E5%99%A8%E4%B8%8E%E7%A1%AC%E4%BB%B6%E5%BC%80%E5%85%B3%E6%8E%A7%E5%88%B6%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.4.</span> <span class="toc-text">4. 继电器与硬件开关控制接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-OpenChaoJi-evcc-hal-gbt-close-dc-relay"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 OpenChaoJi_evcc_hal_gbt_close_dc_relay</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-OpenChaoJi-evcc-hal-gbt-b-lock-B%E7%B1%BB%E7%B3%BB%E7%BB%9F%E4%B8%93%E7%94%A8"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 OpenChaoJi_evcc_hal_gbt_b_lock (B类系统专用)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-OpenChaoJi-evcc-hal-gbt-b-close-s2-B%E7%B1%BB%E7%B3%BB%E7%BB%9F%E4%B8%93%E7%94%A8"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 OpenChaoJi_evcc_hal_gbt_b_close_s2 (B类系统专用)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-OpenChaoJi-evcc-hal-gbt-b-close-s2p-B%E7%B1%BB%E7%B3%BB%E7%BB%9F%E4%B8%93%E7%94%A8"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.4 OpenChaoJi_evcc_hal_gbt_b_close_s2p (B类系统专用)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-OpenChaoJi-evcc-hal-gbt-b-close-sv-B%E7%B1%BB%E7%B3%BB%E7%BB%9F%E4%B8%93%E7%94%A8"><span class="toc-number">1.4.5.</span> <span class="toc-text">4.5 OpenChaoJi_evcc_hal_gbt_b_close_sv (B类系统专用)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%8A%B6%E6%80%81%E7%9B%91%E6%B5%8B%E4%B8%8E%E7%A1%AC%E4%BB%B6%E5%8F%8D%E9%A6%88%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.5.</span> <span class="toc-text">5. 状态监测与硬件反馈接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-OpenChaoJi-evcc-hal-get-status-dc-relay"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 OpenChaoJi_evcc_hal_get_status_dc_relay</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-OpenChaoJi-evcc-hal-gbt-b-is-locked-B%E7%B1%BB%E7%B3%BB%E7%BB%9F%E4%B8%93%E7%94%A8"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2 OpenChaoJi_evcc_hal_gbt_b_is_locked (B类系统专用)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-OpenChaoJi-evcc-hal-gbt-b-is-closed-s2-B%E7%B1%BB%E7%B3%BB%E7%BB%9F%E4%B8%93%E7%94%A8"><span class="toc-number">1.5.3.</span> <span class="toc-text">5.3 OpenChaoJi_evcc_hal_gbt_b_is_closed_s2 (B类系统专用)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-OpenChaoJi-evcc-hal-gbt-b-is-closed-s2p-B%E7%B1%BB%E7%B3%BB%E7%BB%9F%E4%B8%93%E7%94%A8"><span class="toc-number">1.5.4.</span> <span class="toc-text">5.4 OpenChaoJi_evcc_hal_gbt_b_is_closed_s2p (B类系统专用)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-OpenChaoJi-evcc-hal-gbt-b-is-closed-sv-B%E7%B1%BB%E7%B3%BB%E7%BB%9F%E4%B8%93%E7%94%A8"><span class="toc-number">1.5.5.</span> <span class="toc-text">5.5 OpenChaoJi_evcc_hal_gbt_b_is_closed_sv (B类系统专用)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-6-OpenChaoJi-evcc-hal-gbt-get-vol-checkpoint-2"><span class="toc-number">1.5.6.</span> <span class="toc-text">5.6 OpenChaoJi_evcc_hal_gbt_get_vol_checkpoint_2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-7-OpenChaoJi-evcc-hal-gbt-b-get-vol-checkpoint-3-B%E7%B1%BB%E7%B3%BB%E7%BB%9F%E4%B8%93%E7%94%A8"><span class="toc-number">1.5.7.</span> <span class="toc-text">5.7 OpenChaoJi_evcc_hal_gbt_b_get_vol_checkpoint_3 (B类系统专用)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-8-OpenChaoJi-evcc-hal-is-emergency-pushed"><span class="toc-number">1.5.8.</span> <span class="toc-text">5.8 OpenChaoJi_evcc_hal_is_emergency_pushed</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-9-OpenChaoJi-evcc-hal-gbt-a-is-secc-aux-connected-A%E7%B1%BB%E7%B3%BB%E7%BB%9F%E4%B8%93%E7%94%A8"><span class="toc-number">1.5.9.</span> <span class="toc-text">5.9 OpenChaoJi_evcc_hal_gbt_a_is_secc_aux_connected (A类系统专用)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%A8%A1%E6%8B%9F%E9%87%8F%E9%87%87%E6%A0%B7%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.6.</span> <span class="toc-text">6. 模拟量采样接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-OpenChaoJi-evcc-hal-sampling-value"><span class="toc-number">1.6.1.</span> <span class="toc-text">6.1 OpenChaoJi_evcc_hal_sampling_value</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E8%BD%A6%E8%BE%86%E4%B8%8E%E7%94%B5%E6%B1%A0%E4%BF%A1%E6%81%AF%E6%8F%90%E4%BE%9B%E6%8E%A5%E5%8F%A3-BMS-%E6%98%A0%E5%B0%84"><span class="toc-number">1.7.</span> <span class="toc-text">7. 车辆与电池信息提供接口 (BMS 映射)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-OpenChaoJi-evcc-hal-get-imd-request-voltage"><span class="toc-number">1.7.1.</span> <span class="toc-text">7.1 OpenChaoJi_evcc_hal_get_imd_request_voltage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-OpenChaoJi-evcc-hal-get-batt-type"><span class="toc-number">1.7.2.</span> <span class="toc-text">7.2 OpenChaoJi_evcc_hal_get_batt_type</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-OpenChaoJi-evcc-hal-get-rated-capacity"><span class="toc-number">1.7.3.</span> <span class="toc-text">7.3 OpenChaoJi_evcc_hal_get_rated_capacity</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-4-OpenChaoJi-evcc-hal-get-rated-voltage"><span class="toc-number">1.7.4.</span> <span class="toc-text">7.4 OpenChaoJi_evcc_hal_get_rated_voltage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-5-OpenChaoJi-evcc-hal-get-batt-factory"><span class="toc-number">1.7.5.</span> <span class="toc-text">7.5 OpenChaoJi_evcc_hal_get_batt_factory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-6-OpenChaoJi-evcc-hal-get-batt-sn"><span class="toc-number">1.7.6.</span> <span class="toc-text">7.6 OpenChaoJi_evcc_hal_get_batt_sn</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-7-OpenChaoJi-evcc-hal-get-batt-date"><span class="toc-number">1.7.7.</span> <span class="toc-text">7.7 OpenChaoJi_evcc_hal_get_batt_date</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-8-OpenChaoJi-evcc-hal-get-charge-cycles"><span class="toc-number">1.7.8.</span> <span class="toc-text">7.8 OpenChaoJi_evcc_hal_get_charge_cycles</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-9-OpenChaoJi-evcc-hal-get-batt-property"><span class="toc-number">1.7.9.</span> <span class="toc-text">7.9 OpenChaoJi_evcc_hal_get_batt_property</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-10-OpenChaoJi-evcc-hal-get-evin"><span class="toc-number">1.7.10.</span> <span class="toc-text">7.10 OpenChaoJi_evcc_hal_get_evin</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-11-OpenChaoJi-evcc-hal-get-allow-cellvolt"><span class="toc-number">1.7.11.</span> <span class="toc-text">7.11 OpenChaoJi_evcc_hal_get_allow_cellvolt</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-12-OpenChaoJi-evcc-hal-get-allow-voltage"><span class="toc-number">1.7.12.</span> <span class="toc-text">7.12 OpenChaoJi_evcc_hal_get_allow_voltage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-13-OpenChaoJi-evcc-hal-get-allow-current"><span class="toc-number">1.7.13.</span> <span class="toc-text">7.13 OpenChaoJi_evcc_hal_get_allow_current</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-14-OpenChaoJi-evcc-hal-get-rated-energy"><span class="toc-number">1.7.14.</span> <span class="toc-text">7.14 OpenChaoJi_evcc_hal_get_rated_energy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-15-OpenChaoJi-evcc-hal-get-allow-tempera"><span class="toc-number">1.7.15.</span> <span class="toc-text">7.15 OpenChaoJi_evcc_hal_get_allow_tempera</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-16-OpenChaoJi-evcc-hal-get-batt-soc"><span class="toc-number">1.7.16.</span> <span class="toc-text">7.16 OpenChaoJi_evcc_hal_get_batt_soc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-17-OpenChaoJi-evcc-hal-get-measured-voltage"><span class="toc-number">1.7.17.</span> <span class="toc-text">7.17 OpenChaoJi_evcc_hal_get_measured_voltage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-18-OpenChaoJi-evcc-hal-get-measured-current"><span class="toc-number">1.7.18.</span> <span class="toc-text">7.18 OpenChaoJi_evcc_hal_get_measured_current</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-19-OpenChaoJi-evcc-hal-get-expected-time"><span class="toc-number">1.7.19.</span> <span class="toc-text">7.19 OpenChaoJi_evcc_hal_get_expected_time</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-20-OpenChaoJi-evcc-hal-get-max-cellvolt"><span class="toc-number">1.7.20.</span> <span class="toc-text">7.20 OpenChaoJi_evcc_hal_get_max_cellvolt</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-21-OpenChaoJi-evcc-hal-get-min-cellvolt"><span class="toc-number">1.7.21.</span> <span class="toc-text">7.21 OpenChaoJi_evcc_hal_get_min_cellvolt</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-22-OpenChaoJi-evcc-hal-get-max-tempera"><span class="toc-number">1.7.22.</span> <span class="toc-text">7.22 OpenChaoJi_evcc_hal_get_max_tempera</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-23-OpenChaoJi-evcc-hal-get-min-tempera"><span class="toc-number">1.7.23.</span> <span class="toc-text">7.23 OpenChaoJi_evcc_hal_get_min_tempera</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-24-OpenChaoJi-evcc-hal-get-batt-state"><span class="toc-number">1.7.24.</span> <span class="toc-text">7.24 OpenChaoJi_evcc_hal_get_batt_state</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-25-OpenChaoJi-evcc-hal-get-cellvolt-num"><span class="toc-number">1.7.25.</span> <span class="toc-text">7.25 OpenChaoJi_evcc_hal_get_cellvolt_num</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-26-OpenChaoJi-evcc-hal-get-tempera-num"><span class="toc-number">1.7.26.</span> <span class="toc-text">7.26 OpenChaoJi_evcc_hal_get_tempera_num</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-27-OpenChaoJi-evcc-hal-get-cellvolt"><span class="toc-number">1.7.27.</span> <span class="toc-text">7.27 OpenChaoJi_evcc_hal_get_cellvolt</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-28-OpenChaoJi-evcc-hal-get-tempera"><span class="toc-number">1.7.28.</span> <span class="toc-text">7.28 OpenChaoJi_evcc_hal_get_tempera</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E7%94%B5%E6%B1%A0%E7%B3%BB%E7%BB%9F%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.8.</span> <span class="toc-text">8. 电池系统准备工作接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-OpenChaoJi-evcc-hal-battery-prepare"><span class="toc-number">1.8.1.</span> <span class="toc-text">8.1 OpenChaoJi_evcc_hal_battery_prepare</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-OpenChaoJi-evcc-hal-battery-is-ready"><span class="toc-number">1.8.2.</span> <span class="toc-text">8.2 OpenChaoJi_evcc_hal_battery_is_ready</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E8%87%AA%E6%A3%80%E4%B8%8E%E7%BB%9D%E7%BC%98%E7%9B%91%E6%B5%8B%E6%8E%A5%E5%8F%A3-IMD"><span class="toc-number">1.9.</span> <span class="toc-text">9. 自检与绝缘监测接口 (IMD)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-OpenChaoJi-evcc-hal-selfcheck-request-start"><span class="toc-number">1.9.1.</span> <span class="toc-text">9.1 OpenChaoJi_evcc_hal_selfcheck_request_start</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-OpenChaoJi-evcc-hal-selfcheck-request-stop"><span class="toc-number">1.9.2.</span> <span class="toc-text">9.2 OpenChaoJi_evcc_hal_selfcheck_request_stop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-3-OpenChaoJi-evcc-hal-selfcheck-get-result"><span class="toc-number">1.9.3.</span> <span class="toc-text">9.3 OpenChaoJi_evcc_hal_selfcheck_get_result</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-4-OpenChaoJi-evcc-hal-imd-request-start"><span class="toc-number">1.9.4.</span> <span class="toc-text">9.4 OpenChaoJi_evcc_hal_imd_request_start</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-5-OpenChaoJi-evcc-hal-imd-request-stop"><span class="toc-number">1.9.5.</span> <span class="toc-text">9.5 OpenChaoJi_evcc_hal_imd_request_stop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-6-OpenChaoJi-evcc-hal-imd-get-result"><span class="toc-number">1.9.6.</span> <span class="toc-text">9.6 OpenChaoJi_evcc_hal_imd_get_result</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-7-OpenChaoJi-evcc-hal-vent-request-start"><span class="toc-number">1.9.7.</span> <span class="toc-text">9.7 OpenChaoJi_evcc_hal_vent_request_start</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-8-OpenChaoJi-evcc-hal-vent-request-stop"><span class="toc-number">1.9.8.</span> <span class="toc-text">9.8 OpenChaoJi_evcc_hal_vent_request_stop</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E7%B3%BB%E7%BB%9F%E5%8F%8A%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.10.</span> <span class="toc-text">10. 系统及操作系统接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-1-OpenChaoJi-evcc-hal-set-time"><span class="toc-number">1.10.1.</span> <span class="toc-text">10.1 OpenChaoJi_evcc_hal_set_time</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-2-OpenChaoJi-debug-get-log-level"><span class="toc-number">1.10.2.</span> <span class="toc-text">10.2 OpenChaoJi_debug_get_log_level</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-3-OpenChaoJi-os-get-ticks"><span class="toc-number">1.10.3.</span> <span class="toc-text">10.3 OpenChaoJi_os_get_ticks</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/p/7b3e6a114cec4084b5a95d96c7be44cc/" title="OpenChaoJi EVCC HAL 移植、初始化与接口说明文档">OpenChaoJi EVCC HAL 移植、初始化与接口说明文档</a><time datetime="2026-07-01T09:32:55.923Z" title="发表于 2026-07-01 17:32:55">2026-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/p/eb3d587aca4948e4b101dcc2f4d490ee/" title="Proxmox AIO 实践：LXC 环境下 Docker 版 Syncthing 与 Samba 共享方案">Proxmox AIO 实践：LXC 环境下 Docker 版 Syncthing 与 Samba 共享方案</a><time datetime="2026-05-08T03:46:34.689Z" title="发表于 2026-05-08 11:46:34">2026-05-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/p/60c0b542e1e243e9882a1687bb5205e0/" title="避坑指南：如何在 Docker 环境下优雅地更新 Rclone 同步密码？（附 device or resource busy 报错解法）">避坑指南：如何在 Docker 环境下优雅地更新 Rclone 同步密码？（附 device or resource busy 报错解法）</a><time datetime="2026-04-08T03:16:43.344Z" title="发表于 2026-04-08 11:16:43">2026-04-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/p/f4c87a5735d7446d96ce121cb8507207/" title="打造坚不可摧的笔记后盾：Joplin WebDAV 加密笔记自动份至 GitHub 全指南">打造坚不可摧的笔记后盾：Joplin WebDAV 加密笔记自动份至 GitHub 全指南</a><time datetime="2026-03-27T02:06:54.071Z" title="发表于 2026-03-27 10:06:54">2026-03-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/p/8b1b96b6552546f2aba9a4fff469ddd1/" title="深度拆解：从底层拓扑到“防坑”算法，手把手教你做工业级 MPPT 太阳能系统！">深度拆解：从底层拓扑到“防坑”算法，手把手教你做工业级 MPPT 太阳能系统！</a><time datetime="2026-03-10T09:06:27.240Z" title="发表于 2026-03-10 17:06:27">2026-03-10</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Dim_峰</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'Diminuend/Diminuend.github.io',
+      'data-repo-id': 'R_kgDOQCJJZQ',
+      'data-category-id': 'DIC_kwDOQCJJZc4CwyBu',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
